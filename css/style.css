@@ -1,0 +1,16 @@
+body{
+    background-image: url(../imgs/wallpapersden.com_laptop-room-on-the-desk_7680x4320.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment:fixed;
+    background-color: #55595c;
+    overflow: overlay;
+}
+body::-webkit-scrollbar {
+    background-color: #2a2a2b;
+}
+  
+body::-webkit-scrollbar-thumb {
+    background-color: #55595c;
+    border-radius: 7px;
+}

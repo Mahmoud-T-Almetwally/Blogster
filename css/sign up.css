@@ -1,0 +1,17 @@
+body{
+    background-image: url(../imgs/wallpapersden.com_laptop-room-on-the-desk_7680x4320.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment:fixed;
+    background-color: #55595c;
+}
+
+/* .foter{
+    position: static;
+    bottom: 0px;
+}
+.arrow{
+    position: absolute;
+    bottom: -205px;
+    right: 15px;
+} */
