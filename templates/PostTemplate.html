@@ -17,7 +17,7 @@
 <body>
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
         <div class="container">
-            <a href="index.html" class="navbar-brand">Blogster</a>
+            <a href="{{ url_for('static', filename='index.html') }}" class="navbar-brand">Blogster</a>
 
             <div class="form-group pull-right">
                 <input type="text" class="search form-control" placeholder="What you looking for?">
@@ -30,13 +30,13 @@
             <div class="collapse navbar-collapse" id="navmenu">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a href="about.html" class="nav-link">About us</a>
+                        <a href="{{ url_for('static', filename='about.html') }}" class="nav-link">About us</a>
                     </li>
                     <li class="nav-item">
-                        <a href="contact.html" class="nav-link">Contact Us</a>
+                        <a href="{{ url_for('static', filename='contact.html') }}" class="nav-link">Contact Us</a>
                     </li>
                     <li class="nav-item">
-                        <a href="login.html" class="nav-link">Login</a>
+                        <a href="{{ url_for('static', filename='login.html') }}" class="nav-link">Login</a>
                     </li>
                 </ul>
             </div>
@@ -58,9 +58,10 @@
                     </figure>
                     <section class="mb-5">
                         <p class="fs-5 mb-4">Paragraph1</p>
-                        {% block body %} {% endblock %}
+                        {% block body1 %} {% endblock %}
                         <h2 class="fw-bolder mb-4 mt-5">MidHeader</h2>
                         <p class="fs-5 mb-4">Paragraph2</p>
+                        {% block body2 %} {% endblock %}
                     </section>
                 </article>
                 <section class="mb-5">
