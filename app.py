@@ -14,15 +14,15 @@ def login():
     return render_template('login.html')
 
 @app.route('/contact')
-def login():
+def contact():
     return render_template('contact.html')
 
 @app.route('/signup')
-def login():
+def signup():
     return render_template('signup.html')
 
 @app.route('/about')
-def login():
+def about():
     return render_template('about.html')
 
 if __name__ == "__main__":
