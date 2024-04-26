@@ -23,23 +23,38 @@ def login():
 
 @app.route('/contact')
 def contact():
-    return render_template('contact.html', LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'))
+    if bool(request.cookies.get('LoggedIn')):
+        return render_template('contact.html', LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'))
+    else:
+        return render_template('contact.html')
 
 @app.route('/signup')
 def signup():
-    return render_template('signup.html', LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'))
+    if bool(request.cookies.get('LoggedIn')):
+        return render_template('signup.html', LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'))
+    else:
+        return render_template('signup.html')
 
 @app.route('/about')
 def about():
-    return render_template('about.html', LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'))
+    if bool(request.cookies.get('LoggedIn')):
+        return render_template('about.html', LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'))
+    else:
+        return render_template('about.html')
 
 @app.route('/Post/<int:post_id>')
 def get_post(post_id):
-    return render_template("PostTemplate.html", LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'))
+    if bool(request.cookies.get('LoggedIn')):
+        return render_template('Post.html', LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'))
+    else:
+        return render_template('Post.html')
 
 @app.route('/Profile')
 def Profile():
-    return render_template('Profile.html', LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'))
+    if bool(request.cookies.get('LoggedIn')):
+        return render_template('Profile.html', LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'))
+    else:
+        return render_template('Profile.html')
 
 @app.route('/Logout')
 def Logout():
