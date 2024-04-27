@@ -13,8 +13,25 @@ def validate_login(email, password):
 def get_post(post_id: int):
     pass
 
-def get_posts(post_id: list, num: int):
-    pass
+def get_all_posts():
+    conn = sqlite3.connect('DB/blog.db')
+    c = conn.cursor()
+    c.execute('SELECT * FROM Posts')
+    posts = c.fetchall()
+    return posts
+
+def get_comments(post_id: int):
+    conn = sqlite3.connect('DB/blog.db')
+    c = conn.cursor()
+    c.execute('SELECT content, user_ID FROM Comments WHERE post_ID=:post_id', {'post_id':post_id})
+    comments = c.fetchall()
+    usernames = []
+    for comment in comments:
+        c.execute('SELECT username FROM Users WHERE user_ID=:user_id', {'user_id': comment[1]})
+        usernames.append(c.fetchone())
+    comments = zip(comments, usernames)
+    conn.close()
+    return comments
 
 def register_user(username, password, phone, email):
     conn = sqlite3.connect('DB/blog.db')

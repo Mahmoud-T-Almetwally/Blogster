@@ -1,6 +1,3 @@
-body {
-    background:#eee;
-}
 .posts-content{
     margin-top:20px;    
 }
@@ -28,9 +25,6 @@ body {
 .d-flex, .d-inline-flex, .media, .media>:not(.media-body), .jumbotron, .card {
     -ms-flex-negative: 1;
     flex-shrink: 1;
-}
-.bg-dark {
-    background-color: rgba(24,28,33,0.9) !important;
 }
 .card-footer, .card hr {
     border-color: rgba(24,28,33,0.06);

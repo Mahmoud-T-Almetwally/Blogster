@@ -1,14 +1,12 @@
 from flask import Flask, render_template, url_for, request, redirect
-from utils import validate_login, username_availabe, match_passwords, email_availble, register_user, get_user_data
+from utils import validate_login, username_availabe, match_passwords, email_availble, register_user, get_user_data, get_comments, get_all_posts, get_post
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    if bool(request.cookies.get('LoggedIn')):
-        return render_template('index.html', LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'))
-    else:
-        return render_template('index.html')
+    return render_template('index.html', LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
+                            Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None)
 
 @app.route('/login', methods=['GET', "POST"])
 def login():
@@ -25,10 +23,8 @@ def login():
 
 @app.route('/contact')
 def contact():
-    if bool(request.cookies.get('LoggedIn')):
-        return render_template('contact.html', LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'))
-    else:
-        return render_template('contact.html')
+    return render_template('contact.html', LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
+                            Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -56,10 +52,8 @@ def signup():
 
 @app.route('/about')
 def about():
-    if bool(request.cookies.get('LoggedIn')):
-        return render_template('about.html', LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'))
-    else:
-        return render_template('about.html')
+    return render_template('about.html', LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
+                            Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None)
 
 
 @app.route('/Profile')
@@ -80,11 +74,22 @@ def Logout():
 
 @app.route('/Posts')
 def Posts():
-    return render_template('postPage.html')
+    Posts = get_all_posts()
+    return render_template('postPage.html', LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
+                            Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
+                            Posts=Posts)
+
+@app.route('/Posts/<Post_id>')
+def Posts_comments():
+    return render_template('postPage.html',
+                            LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
+                            Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
+                            Post_id=request.args.get('Post_id'),
+                            Post=get_post(request.args.get('Post_id')),
+                            comments=get_comments(request.args.get('Post_id')))
 
 @app.route('/Post/<int:post_id>')
-def get_post(post_id):
-
+def Post(post_id):
     if bool(request.cookies.get('LoggedIn')):
         return render_template('Post.html', LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'))
     else:
