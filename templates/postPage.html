@@ -15,25 +15,25 @@
               <div class="media mb-3">
                 <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="d-block ui-w-40 rounded-circle" alt="">
                 <div class="media-body ml-3 text-light">
-                  Kenneth Frazier
-                  <div class="text-muted small">3 days ago</div>
+                  {{ Post[0][1][0] }}
+                  <div class="text-muted small">{{ Post[0][0][5] }}</div>
                 </div>
               </div>
           
               <p class="text-light">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus finibus commodo bibendum. Vivamus laoreet blandit odio, vel finibus quam dictum ut.
+                {{ Post[0][0][2] }}
               </p>
-              <a href="javascript:void(0)" class="ui-rect ui-bg-cover" style="background-image: url('https://bootdey.com/img/Content/avatar/avatar1.png');"></a>
+              <a href="javascript:void(0)" class="ui-rect ui-bg-cover" style="background-image: url('{{ Post[0][0][6] }}');"></a>
             </div>
 
             <div class="card-footer">
               <a href="javascript:void(0)" class="d-inline-block text-muted">
                 <small class="align-middle">
-                  <strong>123</strong> Likes</small>
+                  <strong>{{ Post[0][0][4] }}</strong> Likes</small>
               </a>
-              <a href="javascript:void(0)" class="d-inline-block text-muted ml-3">
+              <a href="/Posts/{{ Post[0][0][0] }}" class="d-inline-block text-muted ml-3">
                 <small class="align-middle">
-                  <strong>12</strong> Comments</small>
+                  <strong>{{ Post[1] }}</strong> Comments</small>
               </a>
             </div>
           </div>
@@ -46,27 +46,27 @@
             <div class="media mb-3">
               <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="d-block ui-w-40 rounded-circle" alt="">
               <div class="media-body ml-3 text-light">
-                Kenneth Frazier
-                <div class="text-muted small">3 days ago</div>
+                {{ Post[1][0] }}
+                <div class="text-muted small">{{ Post[0][5] }}</div>
               </div>
             </div>
         
             <p class="text-light">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus finibus commodo bibendum. Vivamus laoreet blandit odio, vel finibus quam dictum ut.
+              {{ Post[0][2] }}
             </p>
-            <a href="javascript:void(0)" class="ui-rect ui-bg-cover" style="background-image: url('https://bootdey.com/img/Content/avatar/avatar1.png');"></a>
+            <a href="javascript:void(0)" class="ui-rect ui-bg-cover" style="background-image: url('{{Post[0][6]}}');"></a>
           </div>
 
           <div class="card-footer">
             <a href="javascript:void(0)" class="d-inline-block text-muted">
               <small class="align-middle">
-                <strong>123</strong> Likes</small>
+                <strong>{{ Post[0][4] }}</strong> Likes</small>
             </a>
-            <a href="javascript:void(0)" class="d-inline-block text-muted ml-3">
+            <a href="/Posts/{{ Post[0] }}" class="d-inline-block text-muted ml-3">
               <small class="align-middle">
-                <strong>12</strong> Comments</small>
+                <strong>{{ numComments }}</strong> Comments</small>
             </a>
-            {% for comment in comments[idx:10] %}
+            {% for comment in comments %}
             <div class="d-flex mt-4">
               <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
               <div class="ms-3">

@@ -80,13 +80,13 @@ def Posts():
                             Posts=Posts)
 
 @app.route('/Posts/<Post_id>')
-def Posts_comments():
+def Post_comments(Post_id=None):
     return render_template('postPage.html',
                             LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
                             Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
-                            Post_id=request.args.get('Post_id'),
-                            Post=get_post(request.args.get('Post_id')),
-                            comments=get_comments(request.args.get('Post_id')))
+                            Post=get_post(Post_id),
+                            comments=get_comments(request.args.get('Post_id')),
+                            numComments=len(list(get_comments(request.args.get('Post_id')))))
 
 @app.route('/Post/<int:post_id>')
 def Post(post_id):

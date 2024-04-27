@@ -11,13 +11,32 @@ def validate_login(email, password):
     return valid, id
 
 def get_post(post_id: int):
-    pass
+    conn = sqlite3.connect('DB/blog.db')
+    c = conn.cursor()
+    c.execute('SELECT * FROM Posts WHERE post_ID=:post_id', {'post_id':post_id})
+    post = c.fetchone()
+    c.execute('SELECT user_Name FROM Users WHERE user_ID=:user_id', {'user_id':post[-1]})
+    username = c.fetchone()
+    post = (post, username)
+    conn.close()
+    return post
 
 def get_all_posts():
     conn = sqlite3.connect('DB/blog.db')
     c = conn.cursor()
     c.execute('SELECT * FROM Posts')
     posts = c.fetchall()
+    usernames = []
+    comments = []
+    print(posts)
+    for post in posts:
+        c.execute('SELECT user_Name FROM Users WHERE user_ID=:user_id', {'user_id': post[-1]})
+        usernames.append(c.fetchone())
+        c.execute('SELECT comment_ID FROM Comments WHERE post_ID=:post_id', {'post_id': post[0]})
+        comments.append(len(c.fetchall()))
+    posts = zip(posts, usernames)
+    posts = zip(posts, comments)
+    conn.close()
     return posts
 
 def get_comments(post_id: int):
