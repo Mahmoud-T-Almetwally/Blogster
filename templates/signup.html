@@ -29,7 +29,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row">
+                  <!-- <div class="row">
                     <div class="col-12">
                       <div class="d-flex gap-3 flex-column">
                         <a href="#!" class="btn btn-lg btn-outline-dark">
@@ -41,19 +41,37 @@
                       </div>
                       <p class="text-center mt-4 mb-5">Or sign up with</p>
                     </div>
-                  </div>
-                  <form action="#!">
+                  </div> -->
+                  <form action="/signup" method="POST">
                     <div class="row gy-3 overflow-hidden">
                       <div class="col-12">
                         <div class="form-floating mb-3">
+                          <input type="text" class="form-control" name="username" id="username" placeholder="User Name" required>
+                          <label for="username" class="form-label">Username {% if user_not_avail %} <span class="form-label text-danger">| Username Not Available </span> {% endif %}</label>
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <div class="form-floating mb-3">
                           <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com" required>
-                          <label for="email" class="form-label">Email</label>
+                          <label for="email" class="form-label">Email {% if email_taken %} <span class="form-label text-danger">| Email Already Used </span> {% endif %} </label>
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <div class="form-floating mb-3">
+                          <input type="text" class="form-control" name="number" id="number" value="" placeholder="Phone Number" required>
+                          <label for="number" class="form-label">Phone Number</label>
                         </div>
                       </div>
                       <div class="col-12">
                         <div class="form-floating mb-3">
                           <input type="password" class="form-control" name="password" id="password" value="" placeholder="Password" required>
                           <label for="password" class="form-label">Password</label>
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <div class="form-floating mb-3">
+                          <input type="password" class="form-control" name="conf_password" id="conf_password" value="" placeholder="Confirm Password" required>
+                          <label for="conf_password" class="form-label">Confirm Password {% if passwords_dont_match %} <span class="form-label text-danger">| Passwords Don't Match </span> {% endif %} </label>
                         </div>
                       </div>
                       <div class="col-12">
