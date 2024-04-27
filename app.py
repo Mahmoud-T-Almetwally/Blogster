@@ -78,6 +78,10 @@ def Logout():
     resp.delete_cookie('User_id')
     return resp
 
+@app.route('/Posts')
+def Posts():
+    return render_template('postPage.html')
+
 @app.route('/Post/<int:post_id>')
 def get_post(post_id):
 
