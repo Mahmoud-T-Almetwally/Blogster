@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, request, redirect
-from utils import validate_login, username_availabe, match_passwords, email_availble, register_user
+from utils import validate_login, username_availabe, match_passwords, email_availble, register_user, get_user_data
 
 app = Flask(__name__)
 
@@ -12,13 +12,14 @@ def index():
 
 @app.route('/login', methods=['GET', "POST"])
 def login():
-    if request.method == "POST": 
-        valid, user = validate_login(request.form['email'], request.form['password'])
+    if request.method == "POST":
+        valid, id = validate_login(request.form['email'], request.form['password'])
         if valid:
+            user = get_user_data(id)
             resp = redirect(url_for('index'))
             resp.set_cookie('LoggedIn', 'True')
             resp.set_cookie('Username', user[1])
-            resp.set_cookie('User_id', user[0])
+            resp.set_cookie('User_id', str(user[0]))
             return resp
     return render_template('login.html')
 
@@ -63,10 +64,8 @@ def about():
 
 @app.route('/Profile')
 def Profile():
-    if bool(request.cookies.get('LoggedIn')):
-        return render_template('Profile.html', LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'))
-    else:
-        return render_template('Profile.html')
+    user = get_user_data(request.cookies.get('User_id'))
+    return render_template('Profile.html', LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'), Userdata=user)
 
 @app.route('/Logout')
 def Logout():
