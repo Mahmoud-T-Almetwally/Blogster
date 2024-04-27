@@ -13,7 +13,7 @@ def index():
 @app.route('/login', methods=['GET', "POST"])
 def login():
     if request.method == "POST":
-        valid, id = validate_login(request.form['email'], request.form['password'])
+        valid, id = validate_login(request.form['email'].lower(), request.form['password'])
         if valid:
             user = get_user_data(id)
             resp = redirect(url_for('index'))
@@ -39,11 +39,11 @@ def signup():
         if not match_passwords(request.form['password'], request.form['conf_password']):
             return render_template('signup.html', passwords_dont_match=True)
         
-        if not email_availble(request.form['email']):
+        if not email_availble(request.form['email'].lower()):
             return render_template('signup.html', email_taken = True)
         
-        register_user(request.form['username'], request.form['password'], request.form['number'], request.form['email'])
-        _, user = validate_login(request.form['email'], request.form['password'])
+        register_user(request.form['username'], request.form['password'], request.form['number'], request.form['email'].lower())
+        _, user = validate_login(request.form['email'].lower(), request.form['password'])
         resp = redirect(url_for('index'))
         resp.set_cookie('LoggedIn', 'True')
         resp.set_cookie('Username', user[1])
@@ -64,8 +64,11 @@ def about():
 
 @app.route('/Profile')
 def Profile():
-    user = get_user_data(request.cookies.get('User_id'))
-    return render_template('Profile.html', LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'), Userdata=user)
+    if not bool(request.cookies.get('LoggedIn')):
+        return redirect(url_for('index'))
+    else:
+        user = get_user_data(request.cookies.get('User_id'))
+        return render_template('Profile.html', LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'), Userdata=user)
 
 @app.route('/Logout')
 def Logout():
