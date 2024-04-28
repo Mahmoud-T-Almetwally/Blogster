@@ -10,39 +10,46 @@ def validate_login(email, password):
     conn.close()
     return valid, id
 
-def get_post(post_id: int):
+def get_post(post_id: int, include_username=True, include_comments=True) -> dict:
     conn = sqlite3.connect('DB/blog.db')
     c = conn.cursor()
     c.execute('SELECT * FROM Posts WHERE post_ID=:post_id', {'post_id':post_id})
     post = c.fetchone()
-    c.execute('SELECT user_Name FROM Users WHERE user_ID=:user_id', {'user_id':post[-1]})
-    username = c.fetchone()
-    post = (post, username)
-    conn.close()
-    return post
+    Post_dict = {'Post':post}
+    if include_username:
+        c.execute('SELECT user_Name FROM Users WHERE user_ID=:user_id', {'user_id':post[-1]})
+        username = c.fetchone()
+    Post_dict['Username'] = username
 
-def get_posts(order_by=None, num=3, include_usernames=False, month=None, year=None):
+    if include_username:
+        c.execute('SELECT * FROM Comments WHERE post_ID=:post_id', {'post_id':post[0]})
+        comments = c.fetchall()
+    Post_dict['Comments'] = comments
+    conn.close()
+    return Post_dict
+
+def get_posts(order_by=None, num=3, include_usernames=True, include_comments=True, month=None, year=None) -> dict:
     conn = sqlite3.connect('DB/blog.db')
     c = conn.cursor()
 
-    months = {
-        'January': '01',
-        'February': '02',
-        'March': '03',
-        'April': '04',
-        'May': '05',
-        'June': '06',
-        'July': '07',
-        'August': '08',
-        'September': '09',
-        'October': '10',
-        'November': '11',
-        'December': '12'
-    }
 
     sql = 'SELECT * FROM Posts '
 
     if month and year:
+        months = {
+            'January': '01',
+            'February': '02',
+            'March': '03',
+            'April': '04',
+            'May': '05',
+            'June': '06',
+            'July': '07',
+            'August': '08',
+            'September': '09',
+            'October': '10',
+            'November': '11',
+            'December': '12'
+        }
         date = year + '-' + month[month] + '-00'
         endDate = year + '-' + str(int(month[month]) + 1) + '-00'
         sql += 'WHERE date >= ' + date + " AND date < " + endDate
@@ -52,37 +59,72 @@ def get_posts(order_by=None, num=3, include_usernames=False, month=None, year=No
 
     c.execute(sql)
     top = c.fetchmany(num)
+    Posts_dict = {'Posts':top}
 
     if include_usernames:
         usernames = []
-        comments = []
         for post in top:
             c.execute('SELECT user_Name FROM Users WHERE user_ID=:user_id', {'user_id': post[-1]})
             usernames.append(c.fetchone())
+        Posts_dict['Usernames'] = usernames
+    
+    if include_comments:
+        comments = []
+        for post in top:
             c.execute('SELECT comment_ID FROM Comments WHERE post_ID=:post_id', {'post_id': post[0]})
             comments.append(len(c.fetchall()))
-        top = zip(top, usernames)
-        top = zip(top, comments)
+        Posts_dict['Comments'] = comments
 
-    return top
 
-def get_all_posts():
+    return Posts_dict
+
+def get_all_posts(month=None, year=None, include_usernames=True, include_comments=False) -> dict:
     conn = sqlite3.connect('DB/blog.db')
     c = conn.cursor()
-    c.execute('SELECT * FROM Posts')
+
+    sql = 'SELECT * FROM Posts '
+
+    if month and year:
+        months = {
+            'January': '01',
+            'February': '02',
+            'March': '03',
+            'April': '04',
+            'May': '05',
+            'June': '06',
+            'July': '07',
+            'August': '08',
+            'September': '09',
+            'October': '10',
+            'November': '11',
+            'December': '12'
+        }
+        date = year + '-' + month[month] + '-00'
+        endDate = year + '-' + str(int(month[month]) + 1) + '-00'
+        sql += 'WHERE date >= ' + date + " AND date < " + endDate
+
+
+    c.execute(sql)
     posts = c.fetchall()
-    usernames = []
-    comments = []
+    Posts_dict = {'Posts':posts}
+
     print(posts)
-    for post in posts:
-        c.execute('SELECT user_Name FROM Users WHERE user_ID=:user_id', {'user_id': post[-1]})
-        usernames.append(c.fetchone())
-        c.execute('SELECT comment_ID FROM Comments WHERE post_ID=:post_id', {'post_id': post[0]})
-        comments.append(len(c.fetchall()))
-    posts = zip(posts, usernames)
-    posts = zip(posts, comments)
+    if include_usernames:
+        usernames = []
+        for post in posts:
+            c.execute('SELECT user_Name FROM Users WHERE user_ID=:user_id', {'user_id': post[-1]})
+            usernames.append(c.fetchone())
+        Posts_dict['Usernames'] = usernames  
+
+    if include_comments:
+        comments = []
+        for post in posts:
+            c.execute('SELECT comment_ID FROM Comments WHERE post_ID=:post_id', {'post_id': post[0]})
+            comments.append(len(c.fetchall()))
+        Posts_dict['Comments'] = comments
+
     conn.close()
-    return posts
+    return Posts_dict
 
 def get_comments(post_id: int):
     conn = sqlite3.connect('DB/blog.db')

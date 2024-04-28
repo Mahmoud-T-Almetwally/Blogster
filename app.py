@@ -97,9 +97,12 @@ def Logout():
 @app.route('/Posts')
 def Posts():
     Posts = get_all_posts()
+    test = [(1,), 2, 3, 4]
+    # Post_names = [f'Post_{i}' for i in range(len(Posts))]
+    # Posts_dict = dict(zip(Post_names, Posts))
     return render_template('postPage.html', LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
                             Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
-                            Posts=Posts)
+                            Posts=Posts, test=test)
 
 @app.route('/Posts/<string:Year>/<string:Month>')
 def Posts_by_Date(Year=None, Month=None):
