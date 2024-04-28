@@ -76,6 +76,14 @@ def register_user(username, password, phone, email):
     conn.commit()
     conn.close()
 
+def update_user_data(Userdata):
+    conn = sqlite3.connect('DB/blog.db')
+    c = conn.cursor()
+    c.execute('UPDATE Users SET user_Name=:new_name, password=:new_password, phone=:new_phone, email=:new_email WHERE user_ID=:user_id',
+             {'new_name':Userdata[1], 'new_password':Userdata[2], 'new_phone':Userdata[3], 'new_email':Userdata[4], 'user_id':Userdata[0]})
+    conn.commit()
+    conn.close()
+
 def username_availabe(username):
     conn = sqlite3.connect('DB/blog.db')
     c = conn.cursor()

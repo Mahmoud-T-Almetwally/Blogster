@@ -20,6 +20,7 @@
                     </div>
                 </div>
             </div>
+            {% if not Edit %}
             <div class="col-md-8">
                 <div class="card mb-3 bg-dark">
                     <div class="card-body">
@@ -61,13 +62,62 @@
                         <hr class="text-light">
                         <div class="row">
                             <div class="col-sm-12">
-                                <a class="btn btn-info " target="__blank" href="">Edit</a>
+                                <a class="btn btn-info " target="_self" href="/Profile/{{ Userdata[0] }}">Edit</a>
                                 <a class="btn btn-danger" target="_self" href="/Logout">Logout</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            {% else %}
+            <div class="col-md-8">
+                <form action="/Profile" method="POST" class="card mb-3 bg-dark">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-3 text-white">
+                                <h6 class="mb-0">Username</h6>
+                            </div>
+                            <div class="col-sm-9 text-light">
+                                <input type="text" class="form-control" id="Username" name="Username" value="{{ Userdata[1] }}">
+                            </div>
+                        </div>
+                        <hr class="text-light">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0 text-light">Email</h6>
+                            </div>
+                            <div class="col-sm-9 text-light">
+                                <input type="text" class="form-control" id="Email" name="Email" value="{{ Userdata[4] }}">
+                            </div>
+                        </div>
+                        <hr class="text-light">
+                        <div class="row">
+                            <div class="col-sm-3 text-light">
+                                <h6 class="mb-0">Password</h6>
+                            </div>
+                            <div class="col-sm-9 text-light">
+                                <input type="text" class="form-control" id="Password" name="Password" value="{{ Userdata[2] }}">
+                            </div>
+                        </div>
+                        <hr class="text-light">
+                        <div class="row">
+                            <div class="col-sm-3 text-light">
+                                <h6 class="mb-0">Phone</h6>
+                            </div>
+                            <div class="col-sm-9 text-white">
+                                <input type="text" class="form-control" id="Phone" name="Phone" value="{{ Userdata[3] }}">
+                            </div>
+                        </div>
+                        <hr class="text-light">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button class="btn btn-primary" type="submit">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

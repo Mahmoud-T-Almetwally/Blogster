@@ -1,5 +1,6 @@
 from flask import Flask, render_template, url_for, request, redirect
-from utils import validate_login, username_availabe, match_passwords, email_availble, register_user, get_user_data, get_comments, get_all_posts, get_post, get_posts
+from utils import validate_login, username_availabe, match_passwords, email_availble,\
+      register_user, get_user_data, get_comments, get_all_posts, get_post, get_posts, update_user_data
 
 app = Flask(__name__)
 
@@ -60,13 +61,30 @@ def about():
                             Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None)
 
 
-@app.route('/Profile')
+@app.route('/Profile', methods=['POST'])
 def Profile():
     if not bool(request.cookies.get('LoggedIn')):
         return redirect(url_for('index'))
     else:
+        if request.method == 'POST':
+            user = (request.cookies.get('User_id'), request.form['Username'], request.form['Password'], request.form['Phone'], request.form['Email'])
+            update_user_data(user)
+        else:
+            user = get_user_data(request.cookies.get('User_id'))
+        return render_template('Profile.html', LoggedIn=bool(request.cookies.get('LoggedIn')),
+                                Username="Hello, " + request.cookies.get('Username'),
+                                Userdata=user)
+
+@app.route('/Profile/<Edit>', methods=['GET'])
+def EditProfile(Edit=None):
+    if not bool(request.cookies.get('LoggedIn')):
+        return redirect(url_for('index'))
+    else:
         user = get_user_data(request.cookies.get('User_id'))
-        return render_template('Profile.html', LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'), Userdata=user)
+        return render_template('Profile.html',
+                                LoggedIn=bool(request.cookies.get('LoggedIn')),
+                                Username="Hello, " + request.cookies.get('Username'),
+                                Userdata=user, Edit=Edit)
 
 @app.route('/Logout')
 def Logout():
