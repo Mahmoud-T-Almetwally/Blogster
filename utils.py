@@ -21,21 +21,50 @@ def get_post(post_id: int):
     conn.close()
     return post
 
-def get_posts(order_by=None, num=3, include_usernames=False):
+def get_posts(order_by=None, num=3, include_usernames=False, month=None, year=None):
     conn = sqlite3.connect('DB/blog.db')
     c = conn.cursor()
+
+    months = {
+        'January': '01',
+        'February': '02',
+        'March': '03',
+        'April': '04',
+        'May': '05',
+        'June': '06',
+        'July': '07',
+        'August': '08',
+        'September': '09',
+        'October': '10',
+        'November': '11',
+        'December': '12'
+    }
+
     sql = 'SELECT * FROM Posts '
+
+    if month and year:
+        date = year + '-' + month[month] + '-00'
+        endDate = year + '-' + str(int(month[month]) + 1) + '-00'
+        sql += 'WHERE date >= ' + date + " AND date < " + endDate
+
     if order_by:
         sql += 'ORDER BY ' + order_by
+
     c.execute(sql)
-    top_3 = c.fetchmany(num)
+    top = c.fetchmany(num)
+
     if include_usernames:
         usernames = []
-        for post in top_3:
-            c.execute('SELECT user_Name FROM Users WHERE user_ID=:user_id', {'user_id':post[-1]})
-            usernames.append(c.fetchone()[0])
-        top_3 = (top_3, usernames)
-    return top_3
+        comments = []
+        for post in top:
+            c.execute('SELECT user_Name FROM Users WHERE user_ID=:user_id', {'user_id': post[-1]})
+            usernames.append(c.fetchone())
+            c.execute('SELECT comment_ID FROM Comments WHERE post_ID=:post_id', {'post_id': post[0]})
+            comments.append(len(c.fetchall()))
+        top = zip(top, usernames)
+        top = zip(top, comments)
+
+    return top
 
 def get_all_posts():
     conn = sqlite3.connect('DB/blog.db')

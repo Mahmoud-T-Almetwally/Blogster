@@ -101,7 +101,14 @@ def Posts():
                             Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
                             Posts=Posts)
 
-@app.route('/Posts/<Post_id>')
+@app.route('/Posts/<string:Year>/<string:Month>')
+def Posts_by_Date(Year=None, Month=None):
+    Posts = get_posts(year=request.args.get('Year'), month=request.args.get('Month'), include_usernames=True)
+    return render_template('postPage.html', LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
+                            Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
+                            Posts=Posts)
+
+@app.route('/Posts/<int:Post_id>')
 def Post_comments(Post_id=None):
     return render_template('postPage.html',
                             LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
