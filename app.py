@@ -1,12 +1,16 @@
 from flask import Flask, render_template, url_for, request, redirect
-from utils import validate_login, username_availabe, match_passwords, email_availble, register_user, get_user_data, get_comments, get_all_posts, get_post
+from utils import validate_login, username_availabe, match_passwords, email_availble, register_user, get_user_data, get_comments, get_all_posts, get_post, get_posts
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
+    top_3 = get_posts(order_by='likes', include_usernames=True)
+    RecentPosts = get_posts(order_by='date', num=4)
     return render_template('index.html', LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
-                            Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None)
+                            Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
+                            TopPosts=top_3,
+                            RecentPosts=RecentPosts)
 
 @app.route('/login', methods=['GET', "POST"])
 def login():
@@ -89,11 +93,11 @@ def Post_comments(Post_id=None):
                             numComments=len(list(get_comments(request.args.get('Post_id')))))
 
 @app.route('/Post/<int:post_id>')
-def Post(post_id):
-    if bool(request.cookies.get('LoggedIn')):
-        return render_template('Post.html', LoggedIn=bool(request.cookies.get('LoggedIn')), Username="Hello, " + request.cookies.get('Username'))
-    else:
-        return render_template('Post.html')
+def Post(post_id=None):
+    post = get_post(post_id)
+    return render_template('PostTemplate.html', LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
+                            Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
+                            Post=post)
 
 if __name__ == "__main__":
     app.run(debug=True)

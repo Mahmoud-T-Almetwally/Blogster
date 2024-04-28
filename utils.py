@@ -21,6 +21,22 @@ def get_post(post_id: int):
     conn.close()
     return post
 
+def get_posts(order_by=None, num=3, include_usernames=False):
+    conn = sqlite3.connect('DB/blog.db')
+    c = conn.cursor()
+    sql = 'SELECT * FROM Posts '
+    if order_by:
+        sql += 'ORDER BY ' + order_by
+    c.execute(sql)
+    top_3 = c.fetchmany(num)
+    if include_usernames:
+        usernames = []
+        for post in top_3:
+            c.execute('SELECT user_Name FROM Users WHERE user_ID=:user_id', {'user_id':post[-1]})
+            usernames.append(c.fetchone()[0])
+        top_3 = (top_3, usernames)
+    return top_3
+
 def get_all_posts():
     conn = sqlite3.connect('DB/blog.db')
     c = conn.cursor()
