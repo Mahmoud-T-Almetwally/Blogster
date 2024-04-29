@@ -69,6 +69,32 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-md-6 mx-auto">
+                <div class="card mb-3 bg-dark">
+                    <div class="card-body" >
+                        {% for post in UserPosts %}
+                        <div class="row">
+                            <div class="col-sm-3 text-white">
+                                <span class="mb-0">{{post['Posts'][0]}}   </span>
+                                <img src="{{post['Posts'][6]}}" style="width: 6vw; height: 5vh;" class="rounded">
+                            </div>
+                            <div class="col-sm-3">
+                                <a href="/Post/{{post['Posts'][0]}}" class="text-light">{{ post['Posts'][2] }}</a>
+                            </div>
+                            <div class="col-sm-3 text-light">
+                                {{ post['Posts'][4] }} Likes
+                            </div>
+                            <div class="col-sm-3 text-light">
+                                {{ post['Comments'] }} Comments
+                            </div>
+                        </div>
+                        <hr class="text-light">
+                        {% endfor %}
+                    </div>
+                    <a href="/AddPost" class="mx-auto mb-3"><button class="btn btn-primary">Add Post</button></a>
+                </div>
+            </div>
             {% else %}
             <div class="col-md-8">
                 <form action="/Profile" method="POST" class="card mb-3 bg-dark">

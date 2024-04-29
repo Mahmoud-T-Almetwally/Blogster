@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, request, redirect, jsonify
 from utils import validate_login, username_availabe, match_passwords, email_availble,\
-      register_user, get_user_data, get_comments, get_all_posts, get_post, get_posts, update_user_data, update_likes
+      register_user, get_user_data, get_comments, get_all_posts, get_post, get_posts, update_user_data, update_likes, get_user_posts
 
 app = Flask(__name__)
 
@@ -73,10 +73,15 @@ def Profile():
             user = (request.cookies.get('User_id'), request.form['Username'], request.form['Password'], request.form['Phone'], request.form['Email'])
             update_user_data(user)
         else:
+            User_Posts = get_user_posts(request.cookies.get('User_id'), include_comments=True)
+            Posts = []
+            for post, comments in zip(User_Posts['Posts'], User_Posts['Comments']):
+                Posts.append({'Posts': post, 'Comments':comments})
             user = get_user_data(request.cookies.get('User_id'))
         return render_template('Profile.html', LoggedIn=bool(request.cookies.get('LoggedIn')),
                                 Username="Hello, " + request.cookies.get('Username'),
-                                Userdata=user)
+                                Userdata=user,
+                                UserPosts=Posts)
 
 @app.route('/Profile/<Edit>', methods=['GET', 'POST'])
 def EditProfile(Edit=None):
@@ -127,6 +132,12 @@ def Post_comments(Post_id=None):
                             Post=Post_dict,
                             comments=[Post_dict['Comments']],
                             numComments=len(Post_dict['Comments']))
+
+@app.route('/AddPost')
+def AddPost():
+    return render_template('addpost.html', 
+                           LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
+                           Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None)
 
 @app.route('/UpdateLikes', methods=['GET'])
 def UpdateLikes():

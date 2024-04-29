@@ -14,3 +14,8 @@ body::-webkit-scrollbar-thumb {
     background-color: #55595c;
     border-radius: 7px;
 }
+
+.foot{
+    position: absolute;
+    bottom: 0;
+}

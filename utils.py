@@ -85,6 +85,21 @@ def update_likes():
     conn.commit()
     conn.close()
 
+def get_user_posts(user_ID, include_comments=False) -> list:
+    conn = sqlite3.connect('DB/blog.db')
+    c = conn.cursor()
+    c.execute('SELECT * FROM Posts WHERE user_ID=:user_id', {'user_id':user_ID})
+    posts = c.fetchall()
+    Posts_dict = {'Posts':posts}
+    if include_comments:
+        comments = []
+        for post in posts:
+            c.execute('SELECT comment_ID FROM Comments WHERE post_ID=:post_id', {'post_id': post[0]})
+            comments.append(len(c.fetchall()))
+        Posts_dict['Comments'] = comments
+    conn.close()
+    return Posts_dict
+
 def get_all_posts(month=None, year=None, include_usernames=True, include_comments=True) -> dict:
     conn = sqlite3.connect('DB/blog.db')
     c = conn.cursor()
