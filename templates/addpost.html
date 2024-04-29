@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Add Post</title>
+{% endblock %}
+
+{% block body %}
+<div class="container mb-5">
+    <form action="#!">
+        <div class="row gy-4 gy-xl-5 p-4 p-xl-5">
+          <div class="col-12">
+            <label for="Title" class="form-label text-light">Title <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="Title" name="Title" value="" required>
+          </div>
+          <div class="col-12">
+            <label for="Poster" class="form-label text-light">Poster <span class="text-danger">*</span></label>
+            <input type="file" class="form-control" id="Poster" name="Poster" value="" required>
+          </div>
+          <div class="col-12">
+            <label for="message" class="form-label text-light">Message <span class="text-danger">*</span></label>
+            <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
+          </div>
+          <div class="col-12">
+            <div class="d-grid">
+              <button class="btn btn-primary btn-lg" type="submit">Send Message</button>
+            </div>
+          </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
