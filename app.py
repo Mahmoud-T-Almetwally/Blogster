@@ -1,6 +1,6 @@
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, jsonify
 from utils import validate_login, username_availabe, match_passwords, email_availble,\
-      register_user, get_user_data, get_comments, get_all_posts, get_post, get_posts, update_user_data
+      register_user, get_user_data, get_comments, get_all_posts, get_post, get_posts, update_user_data, update_likes
 
 app = Flask(__name__)
 
@@ -8,10 +8,13 @@ app = Flask(__name__)
 def index():
     top_3 = get_posts(order_by='likes', include_usernames=True)
     RecentPosts = get_posts(order_by='date', num=4)
+    Posts = []
+    for post, username, comments in zip(RecentPosts['Posts'], RecentPosts['Usernames'], RecentPosts['Comments']):
+        Posts.append({'Posts': post, 'Usernames': username, 'Comments':comments})
     return render_template('index.html', LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
                             Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
                             TopPosts=top_3,
-                            RecentPosts=RecentPosts)
+                            RecentPosts=Posts)
 
 @app.route('/login', methods=['GET', "POST"])
 def login():
@@ -61,7 +64,7 @@ def about():
                             Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None)
 
 
-@app.route('/Profile', methods=['POST'])
+@app.route('/Profile', methods=['POST', 'GET'])
 def Profile():
     if not bool(request.cookies.get('LoggedIn')):
         return redirect(url_for('index'))
@@ -75,7 +78,7 @@ def Profile():
                                 Username="Hello, " + request.cookies.get('Username'),
                                 Userdata=user)
 
-@app.route('/Profile/<Edit>', methods=['GET'])
+@app.route('/Profile/<Edit>', methods=['GET', 'POST'])
 def EditProfile(Edit=None):
     if not bool(request.cookies.get('LoggedIn')):
         return redirect(url_for('index'))
@@ -96,29 +99,40 @@ def Logout():
 
 @app.route('/Posts')
 def Posts():
-    Posts = get_all_posts()
-    test = [(1,), 2, 3, 4]
-    # Post_names = [f'Post_{i}' for i in range(len(Posts))]
-    # Posts_dict = dict(zip(Post_names, Posts))
+    Posts_dict = get_all_posts()
+    Posts = []
+    test = [(1,), 2, 3]
+    for post, username, comments in zip(Posts_dict['Posts'], Posts_dict['Usernames'], Posts_dict['Comments']):
+        Posts.append({'Posts': post, 'Usernames': username, 'Comments':comments})
     return render_template('postPage.html', LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
                             Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
                             Posts=Posts, test=test)
 
 @app.route('/Posts/<string:Year>/<string:Month>')
 def Posts_by_Date(Year=None, Month=None):
-    Posts = get_posts(year=request.args.get('Year'), month=request.args.get('Month'), include_usernames=True)
+    Posts_dict = get_all_posts(month=request.args.get('Month'), year=request.args.get('Year'))
+    Posts = []
+    for post, username, comments in zip(Posts_dict['Posts'], Posts_dict['Usernames'], Posts_dict['Comments']):
+        Posts.append({'Posts': post, 'Usernames': username, 'Comments':comments})
     return render_template('postPage.html', LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
                             Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
                             Posts=Posts)
 
 @app.route('/Posts/<int:Post_id>')
 def Post_comments(Post_id=None):
+    Post_dict = get_post(Post_id)
     return render_template('postPage.html',
                             LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
                             Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
-                            Post=get_post(Post_id),
-                            comments=get_comments(request.args.get('Post_id')),
-                            numComments=len(list(get_comments(request.args.get('Post_id')))))
+                            Post=Post_dict,
+                            comments=[Post_dict['Comments']],
+                            numComments=len(Post_dict['Comments']))
+
+@app.route('/UpdateLikes', methods=['GET'])
+def UpdateLikes():
+    update_likes()
+    result = ''
+    return jsonify(result=result)
 
 @app.route('/Post/<int:post_id>')
 def Post(post_id=None):

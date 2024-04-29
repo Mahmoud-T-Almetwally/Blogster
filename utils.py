@@ -21,7 +21,7 @@ def get_post(post_id: int, include_username=True, include_comments=True) -> dict
         username = c.fetchone()
     Post_dict['Username'] = username
 
-    if include_username:
+    if include_comments:
         c.execute('SELECT * FROM Comments WHERE post_ID=:post_id', {'post_id':post[0]})
         comments = c.fetchall()
     Post_dict['Comments'] = comments
@@ -78,7 +78,14 @@ def get_posts(order_by=None, num=3, include_usernames=True, include_comments=Tru
 
     return Posts_dict
 
-def get_all_posts(month=None, year=None, include_usernames=True, include_comments=False) -> dict:
+def update_likes():
+    conn = sqlite3.connect('DB/blog.db')
+    c = conn.cursor()
+    c.execute('UPDATE Posts SET likes = (SELECT count(*) FROM Likes WHERE likes.post_ID=Posts.post_ID)')
+    conn.commit()
+    conn.close()
+
+def get_all_posts(month=None, year=None, include_usernames=True, include_comments=True) -> dict:
     conn = sqlite3.connect('DB/blog.db')
     c = conn.cursor()
 
@@ -101,14 +108,13 @@ def get_all_posts(month=None, year=None, include_usernames=True, include_comment
         }
         date = year + '-' + month[month] + '-00'
         endDate = year + '-' + str(int(month[month]) + 1) + '-00'
-        sql += 'WHERE date >= ' + date + " AND date < " + endDate
+        sql += 'WHERE date BETWEEN ' + date + " AND " + endDate
 
 
     c.execute(sql)
     posts = c.fetchall()
     Posts_dict = {'Posts':posts}
 
-    print(posts)
     if include_usernames:
         usernames = []
         for post in posts:

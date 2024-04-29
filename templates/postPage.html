@@ -15,25 +15,25 @@
               <div class="media mb-3">
                 <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="d-block ui-w-40 rounded-circle" alt="">
                 <div class="media-body ml-3 text-light">
-                  {{ Post[0][1][0] }}
-                  <div class="text-muted small">{{ Post[0][0][5] }}</div>
+                  {{ Post['Usernames'][0] }}
+                  <div class="text-muted small">{{ Post['Posts'][5] }}</div>
                 </div>
               </div>
           
               <p class="text-light">
-                {{ Post[0][0][2] }}
+                {{ Post['Posts'][2] }}
               </p>
-              <a href="/Post/{{ Post[0][0][0] }}" class="ui-rect ui-bg-cover" style="background-image: url('{{ Post[0][0][6] }}');"></a>
+              <a href="/Post/{{ Post['Posts'][0] }}" class="ui-rect ui-bg-cover" style="background-image: url('{{ Post['Posts'][6] }}');"></a>
             </div>
 
             <div class="card-footer">
-              <a href="javascript:void(0)" class="d-inline-block text-muted">
+              <a href="" class="d-inline-block text-muted">
                 <small class="align-middle">
-                  <strong>{{ Post[0][0][4] }}</strong> Likes</small>
+                  <button onclick="Like()" class="btn btn-primary me-2">Like </button><strong>{{ Post['Posts'][4] }}</strong> Likes</small>
               </a>
-              <a href="/Posts/{{ Post[0][0][0] }}" class="d-inline-block text-muted ml-3">
+              <a href="/Posts/{{ Post['Posts'][0] }}" class="d-inline-block text-muted ml-3">
                 <small class="align-middle">
-                  <strong>{{ Post[1] }}</strong> Comments</small>
+                  <strong>{{ Post['Comments'][0] }}</strong> Comments</small>
               </a>
             </div>
           </div>
@@ -46,23 +46,23 @@
             <div class="media mb-3">
               <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="d-block ui-w-40 rounded-circle" alt="">
               <div class="media-body ml-3 text-light">
-                {{ Post[1][0] }}
-                <div class="text-muted small">{{ Post[0][5] }}</div>
+                {{ Post['Username'][0] }}
+                <div class="text-muted small">{{ Post['Post'][5] }}</div>
               </div>
             </div>
         
             <p class="text-light">
-              {{ Post[0][2] }}
+              {{ Post['Post'][2] }}
             </p>
-            <a href="/Post/{{ Post[0][0][0] }}" class="ui-rect ui-bg-cover" style="background-image: url('{{Post[0][6]}}');"></a>
+            <a href="/Post/{{ Post['Post'][0] }}" class="ui-rect ui-bg-cover" style="background-image: url('{{Post['Post'][6]}}');"></a>
           </div>
 
           <div class="card-footer">
             <a href="javascript:void(0)" class="d-inline-block text-muted">
               <small class="align-middle">
-                <strong>{{ Post[0][4] }}</strong> Likes</small>
+                <strong>{{ Post['Post'][4] }}</strong> Likes</small>
             </a>
-            <a href="/Posts/{{ Post[0] }}" class="d-inline-block text-muted ml-3">
+            <a href="/Posts/{{ Post['Post'][0] }}" class="d-inline-block text-muted ml-3">
               <small class="align-middle">
                 <strong>{{ numComments }}</strong> Comments</small>
             </a>
@@ -81,9 +81,22 @@
       {% endif %}
       <div id="posts-container">
       </div>
-      <button class="btn btn-sm btn-primary" id="load-more-btn">Load More</button>
+      <button class="btn btn-primary" id="load-more-btn">Load More</button>
 
       <script type="text/javascript">
+
+            function Like() {
+                $.ajax({
+                    url: '/UpdateLikes',
+                    type: 'GET',
+                    success: function(response) {
+                        $('#result').html(response);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
 
         const posts = Array('{{ test }}')
 

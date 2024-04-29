@@ -8,9 +8,9 @@
 <main class="container text-white">
     <div class="p-4 p-md-5 my-4 text-white rounded bg-dark">
         <div class="col-md-6 px-0">
-            <h1 class="display-4 fst-italic">{{ TopPosts[0][0][2] }} - {{ TopPosts[1][0] }}</h1>
-            <div class="mb-1 text-muted">{{ TopPosts[0][0][5] }}</div>
-            <p class="lead mb-0"><a href="/Post/{{TopPosts[0][0]}}" class="text-white fw-bold">Continue reading...</a></p>
+            <h1 class="display-4 fst-italic">{{ TopPosts['Posts'][0][2] }} - {{ TopPosts['Usernames'][0][0] }}</h1>
+            <div class="mb-1 text-muted">{{ TopPosts['Posts'][0][5] }}</div>
+            <p class="lead mb-0"><a href="/Post/{{TopPosts['Posts'][0][0]}}" class="text-white fw-bold">Continue reading...</a></p>
         </div>
     </div>
 
@@ -20,13 +20,13 @@
                 class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative bg-dark">
                 <div class="col p-4 d-flex flex-column position-static">
                     <strong class="d-inline-block mb-2 text-primary">Featured</strong>
-                    <h3 class="mb-0">{{ TopPosts[0][1][2] }}</h3>
-                    <div class="mb-1 text-muted">{{ TopPosts[0][1][5] }}</div>
-                    <p class="card-text mb-auto">{{ TopPosts[1][1] }}</p>
-                    <a href="/Post/{{ TopPosts[0][1][0] }}">Continue reading</a>
+                    <h3 class="mb-0">{{ TopPosts['Posts'][1][2] }}</h3>
+                    <div class="mb-1 text-muted">{{ TopPosts['Posts'][1][5] }}</div>
+                    <p class="card-text mb-auto">{{ TopPosts['Usernames'][1][0] }}</p>
+                    <a href="/Post/{{ TopPosts['Posts'][1][0] }}">Continue reading</a>
                 </div>
                 <div class="col-auto d-none d-lg-block">
-                    <img src="{{TopPosts[0][1][6]}}" class="rounded" alt="{{ TopPosts[0][1][2] }}" width="200" height="250">
+                    <img src="{{TopPosts['Posts'][1][6]}}" class="rounded" alt="{{ TopPosts['Posts'][1][2] }}" width="200" height="250">
 
                 </div>
             </div>
@@ -36,13 +36,13 @@
                 class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative, bg-dark">
                 <div class="col p-4 d-flex flex-column position-static">
                     <strong class="d-inline-block mb-2 text-success">Popular</strong>
-                    <h3 class="mb-0">{{ TopPosts[0][2][2] }}</h3>
-                    <div class="mb-1 text-muted">{{ TopPosts[0][2][5] }}</div>
-                    <p class="mb-auto">{{ TopPosts[1][2] }}</p>
-                    <a href="/Post/{{ TopPosts[0][2][0] }}">Continue reading</a>
+                    <h3 class="mb-0">{{ TopPosts['Posts'][2][2] }}</h3>
+                    <div class="mb-1 text-muted">{{ TopPosts['Posts'][2][5] }}</div>
+                    <p class="mb-auto">{{ TopPosts['Usernames'][2][0] }}</p>
+                    <a href="/Post/{{ TopPosts['Posts'][2][0] }}">Continue reading</a>
                 </div>
                 <div class="col-auto d-none d-lg-block">
-                    <img src="{{TopPosts[0][2][6]}}" class="rounded" alt="{{ TopPosts[0][2][2] }}" width="200" height="250">
+                    <img src="{{TopPosts['Posts'][2][6]}}" class="rounded" alt="{{ TopPosts['Posts'][2][2] }}" width="200" height="250">
                 </div>
             </div>
         </div>
@@ -158,35 +158,17 @@
                         {% for post in RecentPosts %}
                         <li>
                             <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top"
-                                href="/Post/{{ post[0] }}">
-                                <img src="{{ post[6] }}" alt="Cleaners YOU should mix." class="rounded"
+                                href="/Post/{{ post['Posts'][0] }}">
+                                <img src="{{ post['Posts'][6] }}" alt="Cleaners YOU should mix." class="rounded"
                                     width="100%" height="96">
                                 <div class="col-lg-8">
-                                    <h6 class="mb-0">{{ post[2] }}</h6>
-                                    <small class="text-body-secondary">{{ post[5] }}</small>
+                                    <h6 class="mb-0">{{ post['Posts'][2] }}</h6>
+                                    <small class="text-body-secondary">{{ post['Posts'][5] }}</small>
                                 </div>
                             </a>
                         </li>
                         {% endfor %}
                     </ul>
-                </div>
-
-                <div class="p-4">
-                    <h4 class="fst-italic">Archive</h4>
-                    <ol class="list-unstyled mb-0">
-                        <li><a href="/Posts/2024/January">January 2024</a></li>
-                        <li><a href="/Posts/2024/February">February 2024</a></li>
-                        <li><a href="/Posts/2024/March">March 2024</a></li>
-                        <li><a href="/Posts/2024/April">April 2024</a></li>
-                        <li><a href="/Posts/2024/May">May 2024</a></li>
-                        <li><a href="/Posts/2024/June">June 2024</a></li>
-                        <li><a href="/Posts/2024/July">July 2024</a></li>
-                        <li><a href="/Posts/2024/August">August 2024</a></li>
-                        <li><a href="/Posts/2024/Septemper">Septemper 2024</a></li>
-                        <li><a href="/Posts/2024/October">October 2024</a></li>
-                        <li><a href="/Posts/2024/November">November 2024</a></li>
-                        <li><a href="/Posts/2024/December">December 2024</a></li>
-                    </ol>
                 </div>
 
                 <div class="p-4">
