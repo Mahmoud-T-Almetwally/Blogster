@@ -78,10 +78,10 @@ def get_posts(order_by=None, num=3, include_usernames=True, include_comments=Tru
 
     return Posts_dict
 
-def update_likes():
+def add_like(user_ID, post_ID):
     conn = sqlite3.connect('DB/blog.db')
     c = conn.cursor()
-    c.execute('UPDATE Posts SET likes = (SELECT count(*) FROM Likes WHERE likes.post_ID=Posts.post_ID)')
+    c.execute('INSERT INTO Likes (user_ID, post_ID) VALUES (:user_id, :post_id)', {'user_id':user_ID, 'post_id':post_ID})
     conn.commit()
     conn.close()
 

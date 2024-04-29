@@ -2,6 +2,7 @@
 
 {% block head %}
 <link rel="stylesheet" href="{{url_for('static', filename='css/postPage.css')}}">
+<script type="text/javascript" src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 <title>Posts</title>
 {% endblock %}
 
@@ -28,7 +29,7 @@
             </div>
 
             <div class="card-footer">
-              <button class="btn btn-primary me-3" onclick="Like()">Like</button>
+              <button class="btn btn-primary me-3" type="submit" value="{{ Post['Posts'][0] }}" id="post_like" name="post_like" onclick="Like()">Like</button>
               <a href="" class="d-inline-block text-muted">
                 <small class="align-middle">
                 <strong>{{ Post['Posts'][4] }}</strong> Likes</small>
@@ -83,12 +84,6 @@
       {% endif %}
 
       <script type="text/javascript">
-
-        function Like(){
-          xhttp = new XMLHttpRequest();
-          xhttp.open("POST", "?like", true);
-          xhttp.send();
-        }
       </script>
   </div>
 </div>
