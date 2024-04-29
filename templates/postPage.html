@@ -2,6 +2,7 @@
 
 {% block head %}
 <link rel="stylesheet" href="{{url_for('static', filename='css/postPage.css')}}">
+<title>Posts</title>
 {% endblock %}
 
 {% block body %}
@@ -27,6 +28,7 @@
             </div>
 
             <div class="card-footer">
+              <button class="btn btn-primary me-3" onclick="Like()">Like</button>
               <a href="" class="d-inline-block text-muted">
                 <small class="align-middle">
                 <strong>{{ Post['Posts'][4] }}</strong> Likes</small>
@@ -79,56 +81,14 @@
         </div>
       </div>
       {% endif %}
-      <div id="posts-container">
-      </div>
-      <button class="btn btn-primary" id="load-more-btn">Load More</button>
 
       <script type="text/javascript">
 
-            function Like() {
-                $.ajax({
-                    url: '/UpdateLikes',
-                    type: 'GET',
-                    success: function(response) {
-                        $('#result').html(response);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(xhr.responseText);
-                    }
-                });
-            }
-
-        const posts = Array('{{ test }}')
-
-        console.log(posts);
-    
-        const postsContainer = document.getElementById("posts-container");
-        const loadMoreBtn = document.getElementById("load-more-btn");
-        let visiblePosts = 10;
-    
-        function renderPosts() {
-          postsContainer.innerHTML = "";
-          
-          for (let i = 0; i < visiblePosts && i < posts.length; i++) {
-            const postElement = document.createElement("div");
-            postElement.classList.add("post");
-            postElement.innerText = posts[i];
-            postsContainer.appendChild(postElement);
-          }
-          
-          if (visiblePosts < posts.length) {
-            loadMoreBtn.style.display = "block";
-          } else {
-            loadMoreBtn.style.display = "none";
-          }
+        function Like(){
+          xhttp = new XMLHttpRequest();
+          xhttp.open("POST", "?like", true);
+          xhttp.send();
         }
-    
-        loadMoreBtn.addEventListener("click", function() {
-          visiblePosts += 10;
-          renderPosts();
-        });
-    
-        renderPosts();
       </script>
   </div>
 </div>

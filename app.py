@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, request, redirect, jsonify
 from utils import validate_login, username_availabe, match_passwords, email_availble,\
-      register_user, get_user_data, get_comments, get_all_posts, get_post, get_posts, update_user_data, update_likes, get_user_posts
+      register_user, get_user_data, get_all_posts, get_post, get_posts, update_user_data, update_likes, get_user_posts
 
 app = Flask(__name__)
 
@@ -102,16 +102,20 @@ def Logout():
     resp.delete_cookie('User_id')
     return resp
 
-@app.route('/Posts')
+@app.route('/Posts', methods=['POST', 'GET'])
 def Posts():
+    if request.method== 'POST':
+        print('hello')
+
     Posts_dict = get_all_posts()
     Posts = []
-    test = [(1,), 2, 3]
     for post, username, comments in zip(Posts_dict['Posts'], Posts_dict['Usernames'], Posts_dict['Comments']):
         Posts.append({'Posts': post, 'Usernames': username, 'Comments':comments})
+
+
     return render_template('postPage.html', LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
                             Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
-                            Posts=Posts, test=test)
+                            Posts=Posts)
 
 @app.route('/Posts/<string:Year>/<string:Month>')
 def Posts_by_Date(Year=None, Month=None):
