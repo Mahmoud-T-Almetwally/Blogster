@@ -133,8 +133,15 @@ def Post_comments(Post_id=None):
                             comments=[Post_dict['Comments']],
                             numComments=len(Post_dict['Comments']))
 
-@app.route('/AddPost')
+@app.route('/AddPost', methods=['POST', 'GET'])
 def AddPost():
+    if request.method == 'POST':
+        imagefile = request.files.get('Poster','')
+        print(imagefile)
+        title = request.form['Title']
+        print(title)
+        content = request.form['Content']
+        return redirect(url_for('Profile'))
     return render_template('addpost.html', 
                            LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
                            Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None)
