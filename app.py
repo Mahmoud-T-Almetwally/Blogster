@@ -113,15 +113,16 @@ def Posts():
             delete_like(request.cookies.get('User_id'), request.form['post_ID'])
         return jsonify(new_post_data(request.form['post_ID']))
     else:
-        Posts_dict = get_all_posts()
+        Posts_dict = get_all_posts(include_likes=True, User_id=request.cookies.get('User_id'))
         Posts = []
-        for post, username, comments in zip(Posts_dict['Posts'], Posts_dict['Usernames'], Posts_dict['Comments']):
-            Posts.append({'Posts': post, 'Usernames': username, 'Comments':comments})
+        for post, username, comments, Liked in zip(Posts_dict['Posts'], Posts_dict['Usernames'], Posts_dict['Comments'], Posts_dict['Likes']):
+            Posts.append({'Posts': post, 'Usernames': username, 'Comments':comments, 'Liked':Liked})
 
+        for post in Posts:
+            print(post['Liked'])
 
         return render_template('postPage.html', LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
                                 Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
-                                User_id=request.cookies.get('User_id'),
                                 Posts=Posts)
 
 

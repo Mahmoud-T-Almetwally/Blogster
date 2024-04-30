@@ -32,7 +32,14 @@
 
             <div class="card-footer">
               {% if LoggedIn %}
-              <button class="btn btn-primary me-3 LikeButton" type="submit" value="{{ Post['Posts'][0] }}" id="post_id:{{Post['Posts'][0]}}">Like</button>
+                {% if Post['Liked'] %}
+                  {% set class = 'btn-secondary' %}
+                  {% set text = 'Dislike' %} 
+                {% else %} 
+                  {% set class = 'btn-primary' %}
+                  {% set text = 'Like' %} 
+                {% endif %}
+                <button class="btn me-3 {{ class }} LikeButton" type="submit" value="{{ Post['Posts'][0] }}" id="post_id:{{Post['Posts'][0]}}">{{ text }}</button>
               {% endif %}
                 <small class="align-middle d-inline-block text-muted">
                 <strong id="postlikes_{{Post['Posts'][0]}}">{{ Post['Posts'][4] }}</strong> Likes</small>

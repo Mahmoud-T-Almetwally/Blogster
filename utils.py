@@ -107,7 +107,7 @@ def get_user_posts(user_ID, include_comments=False) -> list:
     conn.close()
     return Posts_dict
 
-def get_all_posts(month=None, year=None, include_usernames=True, include_comments=True, include_likes=False) -> dict:
+def get_all_posts(month=None, year=None, include_usernames=True, include_comments=True, include_likes=False, User_id=None) -> dict:
     conn = sqlite3.connect('DB/blog.db')
     c = conn.cursor()
 
@@ -152,11 +152,11 @@ def get_all_posts(month=None, year=None, include_usernames=True, include_comment
         Posts_dict['Comments'] = comments
     
     if include_likes:
-        likes = []
+        Liked_posts = []
         for post in posts:
-            c.execute('SELECT user_ID FROM Likes WHERE post_ID=:post_id', {'post_id': post[0]})
-            likes.append(c.fetchall())
-        Posts_dict['Likes'] = likes
+            c.execute('SELECT user_ID FROM Likes WHERE post_ID=:post_id AND user_ID=:user_id', {'post_id': post[0], 'user_id':User_id})
+            Liked_posts.append(c.fetchone())
+        Posts_dict['Likes'] = Liked_posts
 
     conn.close()
     return Posts_dict
