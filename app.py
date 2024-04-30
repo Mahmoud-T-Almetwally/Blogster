@@ -128,7 +128,7 @@ def Posts():
 
 @app.route('/Posts/<int:Post_id>')
 def Post_comments(Post_id=None):
-    Post_dict = get_post(Post_id)
+    Post_dict = get_post(Post_id, include_liked=True, User_id=request.cookies.get('User_id'))
     return render_template('postPage.html',
                             LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
                             Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,

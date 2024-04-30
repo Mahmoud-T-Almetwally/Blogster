@@ -71,20 +71,30 @@
               </div>
               
               <div class="card-footer">
+                  {% if LoggedIn %}
+                    {% if Post['Liked'] %}
+                      {% set class = 'btn-secondary' %}
+                      {% set text = 'Dislike' %} 
+                    {% else %} 
+                      {% set class = 'btn-primary' %}
+                      {% set text = 'Like' %} 
+                    {% endif %}
+                    <button class="btn me-3 {{ class }} LikeButton" type="submit" value="{{ Post['Post'][0] }}" id="post_id:{{Post['Post'][0]}}">{{ text }}</button>
+                  {% endif %}
                   <small class="align-middle d-inline-block text-muted">
-                  <strong>{{ Post['Post'][4] }}</strong> Likes</small>
+                  <strong id="postlikes_{{ Post['Post'][0] }}">{{ Post['Post'][4] }}</strong> Likes</small>
                   <a href="/Posts/{{ Post['Post'][0] }}" class="d-inline-block text-muted ml-3">
                     <small class="align-middle">
-                    <strong id="postcomments_{{Post['Posts'][0]}}">{{ numComments }}</strong> Comments</small>
+                    <strong id="postcomments_{{Post['Post'][0]}}">{{ numComments }}</strong> Comments</small>
                   </a>
               {% for comment in comments %}
-              <div class="d-flex mt-4">
-                <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                <div class="ms-3">
-                  <div class="fw-bold text-light">{{ comment[1] }}</div>
-                  <div class="text-light ms-2">{{comment[0][0]}}</div>
+                <div class="d-flex mt-4">
+                  <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                  <div class="ms-3">
+                    <div class="fw-bold text-light">{{ comment[1] }}</div>
+                    <div class="text-light ms-2">{{comment[0]}}</div>
+                  </div>
                 </div>
-              </div>
               {% endfor %}       
             </div>
           </div>

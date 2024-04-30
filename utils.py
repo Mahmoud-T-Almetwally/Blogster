@@ -10,7 +10,7 @@ def validate_login(email, password):
     conn.close()
     return valid, id
 
-def get_post(post_id: int, include_username=True, include_comments=True) -> dict:
+def get_post(post_id: int, include_username=True, include_comments=True, include_liked=True, User_id=None) -> dict:
     conn = sqlite3.connect('DB/blog.db')
     c = conn.cursor()
     c.execute('SELECT * FROM Posts WHERE post_ID=:post_id', {'post_id':post_id})
@@ -19,12 +19,17 @@ def get_post(post_id: int, include_username=True, include_comments=True) -> dict
     if include_username:
         c.execute('SELECT user_Name FROM Users WHERE user_ID=:user_id', {'user_id':post[-1]})
         username = c.fetchone()
-    Post_dict['Username'] = username
+        Post_dict['Username'] = username
 
     if include_comments:
         c.execute('SELECT * FROM Comments WHERE post_ID=:post_id', {'post_id':post[0]})
         comments = c.fetchall()
-    Post_dict['Comments'] = comments
+        Post_dict['Comments'] = comments
+    
+    if include_liked:
+        c.execute('SELECT user_ID FROM Likes WHERE post_ID=:post_id AND user_ID=:user_id', {'post_id': post[0], 'user_id':User_id})
+        Post_dict['Liked'] = True if c.fetchone() else False
+
     conn.close()
     return Post_dict
 
