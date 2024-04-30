@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, request, redirect, jsonify
 from utils import validate_login, username_availabe, match_passwords, email_availble,\
-      register_user, get_user_data, get_all_posts, get_post, get_posts, update_user_data, add_like, get_user_posts
+      register_user, get_user_data, get_all_posts, get_post, get_posts, update_user_data, add_like, get_user_posts, delete_like
 
 app = Flask(__name__)
 
@@ -105,8 +105,12 @@ def Logout():
 @app.route('/Posts', methods=['POST', 'GET'])
 def Posts():
     if request.method== 'POST':
-        print(request.data.)
-        add_like(request.cookies.get('User_id'))
+        if not eval(request.form['Delete'].capitalize()):
+            print('Liked')
+            add_like(request.cookies.get('User_id'), request.form['post_ID'])
+        else:
+            print('DisLiked')
+            delete_like(request.cookies.get('User_id'), request.form['post_ID'])
 
     Posts_dict = get_all_posts()
     Posts = []
@@ -116,6 +120,7 @@ def Posts():
 
     return render_template('postPage.html', LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
                             Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
+                            User_id=request.cookies.get('User_id'),
                             Posts=Posts)
 
 
@@ -142,11 +147,6 @@ def AddPost():
                            LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
                            Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None)
 
-@app.route('/UpdateLikes', methods=['GET'])
-def UpdateLikes():
-    update_likes()
-    result = ''
-    return jsonify(result=result)
 
 @app.route('/Post/<int:post_id>')
 def Post(post_id=None):
