@@ -27,9 +27,9 @@ def get_post(post_id: int, include_username=True, include_comments=True, include
         Post_dict['Comments'] = list(reversed(comments))
     
     if include_liked:
-        c.execute('SELECT user_ID FROM Likes WHERE post_ID=:post_id AND user_ID=:user_id', {'post_id': post[0], 'user_id':User_id})
-        Post_dict['Liked'] = True if c.fetchone() else False
-
+        c.execute('SELECT user_ID FROM Likes WHERE post_ID=:post_id AND user_ID=:user_id', {'post_id': post_id, 'user_id':User_id})
+        Post_dict['Liked'] = True if [c.fetchone()] else False
+    print(Post_dict['Liked'])
     conn.close()
     return Post_dict
 

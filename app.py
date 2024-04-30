@@ -55,15 +55,12 @@ def signup():
         resp.set_cookie('User_id', str(user[0]))
         return resp
     else:
-        return render_template('signup.html')
-        
-    
+        return render_template('signup.html')  
 
 @app.route('/about')
 def about():
     return render_template('about.html', LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
                             Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None)
-
 
 @app.route('/Profile', methods=['POST', 'GET'])
 def Profile():
@@ -123,7 +120,6 @@ def Posts():
                                 Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
                                 Posts=Posts)
 
-
 @app.route('/Posts/<int:Post_id>')
 def Post_comments(Post_id=None):
     Post_dict = get_post(Post_id, include_liked=True, include_comments=True, User_id=request.cookies.get('User_id'))
@@ -141,11 +137,16 @@ def AddComment(Post_id=None):
     add_comment(CommentData)
     return redirect(url_for('Post_comments', Post_id=Post_id))
 
+@app.route('/AddPostComment/<Post_id>', methods=['POST'])
+def AddPostComment(Post_id=None):
+    CommentData = (request.form['comment_sect'], request.cookies.get('User_id'), Post_id)
+    add_comment(CommentData)
+    return redirect(url_for('Post', Post_id=Post_id))
+
 @app.route('/UpdatePosts/<Post_id>', methods=["GET"])
 def UpdatePosts(Post_id=None):
     if request.method == 'GET':
-        return jsonify(new_post_data(Post_id))
-        
+        return jsonify(new_post_data(Post_id))       
 
 @app.route('/AddPost', methods=['POST', 'GET'])
 def AddPost():
@@ -160,13 +161,14 @@ def AddPost():
                            LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
                            Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None)
 
-
-@app.route('/Post/<int:post_id>')
-def Post(post_id=None):
-    post = get_post(post_id)
+@app.route('/Post/<int:Post_id>')
+def Post(Post_id=None):
+    post = get_post(Post_id)
     return render_template('PostTemplate.html', LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
                             Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
-                            Post=post)
+                            Post=post,
+                            getUserName=get_username,
+                            numComments=len(post['Comments']))
 
 if __name__ == "__main__":
     app.run(debug=True)
