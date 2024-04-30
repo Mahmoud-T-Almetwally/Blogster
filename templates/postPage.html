@@ -10,98 +10,112 @@
 {% block body %}
 <div class="container posts-content">
   <div class="row">
-      {% if not comments %}
-      {% for Post in Posts %}
-      {% set image_url = Post['Posts'][6] %}
-      <div class="col-lg-12">
-          <div class="card mb-4 bg-dark" style="width: auto; max-width: 800px; margin: auto;">
-            <div class="card-body">
-              <div class="media mb-3">
-                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="d-block ui-w-40 rounded-circle" alt="">
-                <div class="media-body ml-3 text-light">
-                  {{ Post['Usernames'][0] }}
-                  <div class="text-muted small">{{ Post['Posts'][5] }}</div>
-                </div>
-              </div>
-          
-              <p class="text-light">
-                {{ Post['Posts'][2] }}
-              </p>
-              <a href="/Post/{{ Post['Posts'][0] }}" class="ui-rect ui-bg-cover" style="background-image: url('{{image_url}}');"></a>
+    {% if not comments %}
+    {% for Post in Posts %}
+    {% set image_url = Post['Posts'][6] %}
+    <div class="col-lg-12">
+      <div class="card mb-4 bg-dark" style="width: auto; max-width: 800px; margin: auto;">
+        <div class="card-body">
+          <div class="media mb-3">
+            <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="d-block ui-w-40 rounded-circle" alt="">
+            <div class="media-body ml-3 text-light">
+              {{ Post['Usernames'][0] }}
+              <div class="text-muted small">{{ Post['Posts'][5] }}</div>
             </div>
+          </div>
 
-            <div class="card-footer">
-              {% if LoggedIn %}
-                {% if Post['Liked'] %}
-                  {% set class = 'btn-secondary' %}
-                  {% set text = 'Dislike' %} 
-                {% else %} 
-                  {% set class = 'btn-primary' %}
-                  {% set text = 'Like' %} 
-                {% endif %}
-                <button class="btn me-3 {{ class }} LikeButton" type="submit" value="{{ Post['Posts'][0] }}" id="post_id:{{Post['Posts'][0]}}">{{ text }}</button>
-              {% endif %}
-                <small class="align-middle d-inline-block text-muted">
-                <strong id="postlikes_{{Post['Posts'][0]}}">{{ Post['Posts'][4] }}</strong> Likes</small>
-              <a href="/Posts/{{ Post['Posts'][0] }}" class="d-inline-block text-muted ml-3">
-                <small class="align-middle">
-                  <strong>{{ Post['Comments'][0] }}</strong> Comments</small>
-                </a>
-              </div>
+          <p class="text-light">
+            {{ Post['Posts'][2] }}
+          </p>
+          <a href="/Post/{{ Post['Posts'][0] }}" class="ui-rect ui-bg-cover"
+            style="background-image: url('{{image_url}}');"></a>
+        </div>
+
+        <div class="card-footer">
+          {% if LoggedIn %}
+            {% if Post['Liked'] %}
+              {% set class = 'btn-secondary' %}
+              {% set text = 'Dislike' %}
+            {% else %}
+              {% set class = 'btn-primary' %}
+              {% set text = 'Like' %}
+            {% endif %}
+            <button class="btn me-3 {{ class }} LikeButton" type="submit" value="{{ Post['Posts'][0] }}" id="post_id:{{Post['Posts'][0]}}">{{ text }}</button>
+          {% endif %}
+          <small class="align-middle d-inline-block text-muted">
+            <strong id="postlikes_{{Post['Posts'][0]}}">{{ Post['Posts'][4] }}</strong> Likes</small>
+          <a href="/Posts/{{ Post['Posts'][0] }}" class="d-inline-block text-muted ml-3">
+            <small class="align-middle">
+              <strong>{{ Post['Comments'] }}</strong> Comments
+            </small>
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    {% set image_url = Post['Post'][6] %}
+    <div class="col-lg-12">
+      <div class="card mb-4 bg-dark" style="width: auto; max-width: 800px; margin: auto;">
+        <div class="card-body">
+          <div class="media mb-3">
+            <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="d-block ui-w-40 rounded-circle" alt="">
+            <div class="media-body ml-3 text-light">
+              {{ Post['Username'][0] }}
+              <div class="text-muted small">{{ Post['Post'][5] }}</div>
+            </div>
+          </div>
+
+          <p class="text-light">
+            {{ Post['Post'][2] }}
+          </p>
+          <a href="/Post/{{ Post['Post'][0] }}" class="ui-rect ui-bg-cover"
+            style="background-image: url('{{image_url}}');"></a>
+        </div>
+
+        <div class="card-footer">
+          {% if LoggedIn %}
+          {% if Post['Liked'] %}
+          {% set class = 'btn-secondary' %}
+          {% set text = 'Dislike' %}
+          {% else %}
+          {% set class = 'btn-primary' %}
+          {% set text = 'Like' %}
+          {% endif %}
+          <button class="btn me-3 {{ class }} LikeButton" type="submit" value="{{ Post['Post'][0] }}"
+            id="post_id:{{Post['Post'][0]}}">{{ text }}</button>
+          {% endif %}
+          <small class="align-middle d-inline-block text-muted">
+            <strong id="postlikes_{{ Post['Post'][0] }}">{{ Post['Post'][4] }}</strong> Likes</small>
+          <a href="/Posts/{{ Post['Post'][0] }}" class="d-inline-block text-muted ml-3">
+            <small class="align-middle">
+              <strong id="postcomments_{{Post['Post'][0]}}">{{ numComments }}</strong> Comments</small>
+          </a>
+          {% if LoggedIn %}
+          <form action="/AddComment/{{ Post['Post'][0] }}" method="POST" class="mt-3">
+            <textarea class="form-control" rows="3" placeholder="Join the discussion and leave a comment!"
+              id="comment_sect" name="comment_sect"></textarea>
+            <button class="btn mt-3 me-2 btn-primary" id="submit_btn" name="{{ Post['Post'][0] }}">Comment</button>
+            <button class="btn mt-3 btn-danger" id="discard_btn">Discard</button>
+          </form>
+          {% endif %}
+          {% for Comments in comments %}
+          {% for comment in Comments %}
+          <div class="d-flex my-4">
+            <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg"
+                alt="..." /></div>
+            <div class="ms-3">
+              <div class="fw-bold text-light">{{ getUserName(comment[2]) }}</div>
+              <div class="text-light ms-2">{{comment[1]}}</div>
             </div>
           </div>
           {% endfor %}
-          {% else %}
-          {% set image_url = Post['Post'][6] %}
-          <div class="col-lg-12">
-            <div class="card mb-4 bg-dark" style="width: auto; max-width: 800px; margin: auto;">
-              <div class="card-body">
-                <div class="media mb-3">
-                  <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="d-block ui-w-40 rounded-circle" alt="">
-                  <div class="media-body ml-3 text-light">
-                    {{ Post['Username'][0] }}
-                    <div class="text-muted small">{{ Post['Post'][5] }}</div>
-                  </div>
-                </div>
-                
-                <p class="text-light">
-                  {{ Post['Post'][2] }}
-                </p>
-                <a href="/Post/{{ Post['Post'][0] }}" class="ui-rect ui-bg-cover" style="background-image: url('{{image_url}}');"></a>
-              </div>
-              
-              <div class="card-footer">
-                  {% if LoggedIn %}
-                    {% if Post['Liked'] %}
-                      {% set class = 'btn-secondary' %}
-                      {% set text = 'Dislike' %} 
-                    {% else %} 
-                      {% set class = 'btn-primary' %}
-                      {% set text = 'Like' %} 
-                    {% endif %}
-                    <button class="btn me-3 {{ class }} LikeButton" type="submit" value="{{ Post['Post'][0] }}" id="post_id:{{Post['Post'][0]}}">{{ text }}</button>
-                  {% endif %}
-                  <small class="align-middle d-inline-block text-muted">
-                  <strong id="postlikes_{{ Post['Post'][0] }}">{{ Post['Post'][4] }}</strong> Likes</small>
-                  <a href="/Posts/{{ Post['Post'][0] }}" class="d-inline-block text-muted ml-3">
-                    <small class="align-middle">
-                    <strong id="postcomments_{{Post['Post'][0]}}">{{ numComments }}</strong> Comments</small>
-                  </a>
-              {% for comment in comments %}
-                <div class="d-flex mt-4">
-                  <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                  <div class="ms-3">
-                    <div class="fw-bold text-light">{{ comment[1] }}</div>
-                    <div class="text-light ms-2">{{comment[0]}}</div>
-                  </div>
-                </div>
-              {% endfor %}       
-            </div>
-          </div>
+          {% endfor %}
+        </div>
       </div>
-      {% endif %}
-      
     </div>
+    {% endif %}
+
   </div>
-  {% endblock %}
-  
+</div>
+{% endblock %}

@@ -24,6 +24,10 @@ window.addEventListener('load', (e) =>{
             updatePostData(this.id[8])
         })
     }
+    document.getElementById('discard_btn').addEventListener('click', (e) => {
+        e.preventDefault()
+        clear()
+    })
 })
 
 function Like(Post_id, delete_like){
@@ -45,18 +49,20 @@ function Like(Post_id, delete_like){
     });
 }
 
-
 function updatePostData(Post_id) {
     $.ajax({
         url: `/UpdatePosts/${Post_id}`,
         method: 'GET',
         dataType: 'json',
         success: function(data) {
-            // $('#postlikes_'+Post_id).Text(data.likes[0][0])
             document.getElementById('postlikes_'+Post_id).textContent = data.likes[0][0]
         },
         error: function() {
             console.error('Error fetching data.');
         }
     });
+}
+
+function clear(){
+    document.getElementById('comment_sect').value = '';
 }

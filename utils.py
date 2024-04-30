@@ -22,9 +22,9 @@ def get_post(post_id: int, include_username=True, include_comments=True, include
         Post_dict['Username'] = username
 
     if include_comments:
-        c.execute('SELECT * FROM Comments WHERE post_ID=:post_id', {'post_id':post[0]})
+        c.execute('SELECT * FROM Comments WHERE post_ID=:post_id', {'post_id':post_id})
         comments = c.fetchall()
-        Post_dict['Comments'] = comments
+        Post_dict['Comments'] = list(reversed(comments))
     
     if include_liked:
         c.execute('SELECT user_ID FROM Likes WHERE post_ID=:post_id AND user_ID=:user_id', {'post_id': post[0], 'user_id':User_id})
@@ -32,6 +32,21 @@ def get_post(post_id: int, include_username=True, include_comments=True, include
 
     conn.close()
     return Post_dict
+
+def add_comment(CommentData):
+    conn = sqlite3.connect('DB/blog.db')
+    c = conn.cursor()
+    c.execute('INSERT INTO Comments (content, user_ID, post_ID) VALUES (:Content, :user_id, :post_id)', 
+              {'Content':CommentData[0], 'user_id':CommentData[1], 'post_id':CommentData[2]})
+    conn.commit()
+    conn.close()
+
+def get_username(User_id):
+    conn = sqlite3.connect('DB/blog.db')
+    c = conn.cursor()
+    c.execute('SELECT user_Name FROM Users WHERE user_ID=:user_id', {'user_id':User_id})
+    username = c.fetchone()[0]
+    return username
 
 def get_posts(order_by=None, num=3, include_usernames=True, include_comments=True, month=None, year=None) -> dict:
     conn = sqlite3.connect('DB/blog.db')
@@ -80,7 +95,7 @@ def get_posts(order_by=None, num=3, include_usernames=True, include_comments=Tru
             comments.append(len(c.fetchall()))
         Posts_dict['Comments'] = comments
 
-
+    conn.close()
     return Posts_dict
 
 def add_like(user_ID, post_ID):
@@ -191,6 +206,7 @@ def new_post_data(post_ID, include_comments=False, include_likes=True):
         c.execute('SELECT * FROM Comments WHERE post_ID=post_id', {'post_id':post_ID})
         comments = len(c.fetchall())
         Post_data['comments'] = comments
+    conn.close()
     return Post_data
 
 def register_user(username, password, phone, email):

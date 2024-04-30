@@ -1,6 +1,7 @@
 from flask import Flask, render_template, url_for, request, redirect, jsonify
 from utils import validate_login, username_availabe, match_passwords, email_availble,\
-      register_user, get_user_data, get_all_posts, get_post, get_posts, update_user_data, add_like, get_user_posts, delete_like, new_post_data
+    register_user, get_user_data, get_all_posts, get_post, get_posts, update_user_data,\
+    add_like, get_user_posts, delete_like, new_post_data, add_comment, get_username
 
 app = Flask(__name__)
 
@@ -118,9 +119,6 @@ def Posts():
         for post, username, comments, Liked in zip(Posts_dict['Posts'], Posts_dict['Usernames'], Posts_dict['Comments'], Posts_dict['Likes']):
             Posts.append({'Posts': post, 'Usernames': username, 'Comments':comments, 'Liked':Liked})
 
-        for post in Posts:
-            print(post['Liked'])
-
         return render_template('postPage.html', LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
                                 Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
                                 Posts=Posts)
@@ -128,13 +126,20 @@ def Posts():
 
 @app.route('/Posts/<int:Post_id>')
 def Post_comments(Post_id=None):
-    Post_dict = get_post(Post_id, include_liked=True, User_id=request.cookies.get('User_id'))
+    Post_dict = get_post(Post_id, include_liked=True, include_comments=True, User_id=request.cookies.get('User_id'))
     return render_template('postPage.html',
                             LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
                             Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
                             Post=Post_dict,
+                            getUserName=get_username,
                             comments=[Post_dict['Comments']],
                             numComments=len(Post_dict['Comments']))
+
+@app.route('/AddComment/<Post_id>', methods=['POST'])
+def AddComment(Post_id=None):
+    CommentData = (request.form['comment_sect'], request.cookies.get('User_id'), Post_id)
+    add_comment(CommentData)
+    return redirect(url_for('Post_comments', Post_id=Post_id))
 
 @app.route('/UpdatePosts/<Post_id>', methods=["GET"])
 def UpdatePosts(Post_id=None):
