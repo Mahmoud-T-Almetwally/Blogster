@@ -174,6 +174,20 @@ def get_comments(post_id: int):
     conn.close()
     return comments
 
+def new_post_data(post_ID, include_comments=False, include_likes=True):
+    conn = sqlite3.connect('DB/blog.db')
+    c = conn.cursor()
+    Post_data = {}
+    if include_likes:
+        c.execute('SELECT likes FROM Posts WHERE post_ID=:post_id', {'post_id':post_ID})
+        likes = c.fetchall()
+        Post_data['likes'] = likes
+    if include_comments:
+        c.execute('SELECT * FROM Comments WHERE post_ID=post_id', {'post_id':post_ID})
+        comments = len(c.fetchall())
+        Post_data['comments'] = comments
+    return Post_data
+
 def register_user(username, password, phone, email):
     conn = sqlite3.connect('DB/blog.db')
     c = conn.cursor()

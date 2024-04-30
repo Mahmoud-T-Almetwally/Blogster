@@ -20,15 +20,43 @@ window.addEventListener('load', (e) =>{
                 this.classList.add('btn-primary')
                 this.textContent = 'Like'
             }
+            console.log(this.id[8])
+            updatePostData(this.id[8])
         })
     }
 })
 
 function Like(Post_id, delete_like){
-    xhttp = new XMLHttpRequest();
-    xhttp.open("POST", "?like", true);
-    data = new FormData();
-    data.append('post_ID', String(Post_id))
-    data.append('Delete', delete_like)
-    xhttp.send(data);
+    formData = new FormData();
+    formData.append('post_ID', String(Post_id))
+    formData.append('Delete', delete_like)
+    $.ajax({ 
+        url: '/Posts', 
+        method: 'POST', 
+        data: formData, 
+        processData: false, 
+        contentType: false, 
+        success: function (data) {                       
+            document.getElementById('postlikes_'+Post_id).textContent = data.likes[0][0]
+        }, 
+        error: function (xhr, status, error) {                        
+            console.error(error); 
+        } 
+    });
+}
+
+
+function updatePostData(Post_id) {
+    $.ajax({
+        url: `/UpdatePosts/${Post_id}`,
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            // $('#postlikes_'+Post_id).Text(data.likes[0][0])
+            document.getElementById('postlikes_'+Post_id).textContent = data.likes[0][0]
+        },
+        error: function() {
+            console.error('Error fetching data.');
+        }
+    });
 }
