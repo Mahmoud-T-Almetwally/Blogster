@@ -87,7 +87,7 @@ def get_posts(order_by=None, num=3, include_usernames=True, include_comments=Tru
 
     c.execute(sql)
     top = c.fetchmany(num)
-    Posts_dict = {'Posts':list(reversed(top))}
+    Posts_dict = {'Posts':list(reversed(top)) if not order_by else top}
 
     if include_usernames:
         usernames = []
@@ -111,6 +111,23 @@ def add_post(PostData):
     c = conn.cursor()
     c.execute('INSERT INTO Posts (content, Title, category, date, photo, user_ID) VALUES (:Content, :title, :category, datetime(), :photo, :user_id)', 
               {'Content':PostData[0], 'title':PostData[1], 'category':PostData[2], 'photo':PostData[3], 'user_id':PostData[4]})
+    conn.commit()
+    conn.close()
+
+def delete_post(Post_id):
+    conn = sqlite3.connect('DB/blog.db')
+    c = conn.cursor()
+    c.execute('DELETE FROM Posts WHERE post_ID=:post_id', {'post_id':Post_id})
+    c.execute('DELETE FROM Comments WHERE post_ID=:post_id', {'post_id':Post_id})
+    c.execute('DELETE FROM Likes WHERE post_ID=:post_id', {'post_id':Post_id})
+    conn.commit()
+    conn.close()
+
+def edit_post(Post_id, new_PostData):
+    conn = sqlite3.connect('DB/blog.db')
+    c = conn.cursor()
+    c.execute('UPDATE Posts SET content=:Content, title=:Title, category=:tags, photo=:Photo WHERE post_ID=:post_id',
+              {'Content': new_PostData[0], 'Title':new_PostData[1], 'tags':new_PostData[2], 'Photo':new_PostData[3], 'post_id':Post_id})
     conn.commit()
     conn.close()
 

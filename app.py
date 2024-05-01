@@ -1,9 +1,7 @@
-from flask import Flask, render_template, url_for, request, redirect, jsonify, send_file
+from flask import Flask, render_template, url_for, request, redirect, jsonify
 from utils import validate_login, username_availabe, match_passwords, email_availble,\
     register_user, get_user_data, get_all_posts, get_post, get_posts, update_user_data,\
-    add_like, get_user_posts, delete_like, new_post_data, add_comment, get_username, add_post, add_message
-import os
-from io import BytesIO
+    add_like, get_user_posts, delete_like, new_post_data, add_comment, get_username, add_post, add_message, delete_post, edit_post
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/imgs/'
@@ -181,13 +179,37 @@ def AddPost():
         content = request.form['Content']
         tags = request.form['tags']
         user_id = request.cookies.get('User_id')
-        PostData = (content, title, tags, '../'+app.config['UPLOAD_FOLDER']+imagefile.filename, user_id)
-        imagefile.save(app.config['UPLOAD_FOLDER']+imagefile.filename)
+        PostData = (content, title, tags, '../'+app.config['UPLOAD_FOLDER']+'_'+str(user_id)+'_'+title.replace(' ', '_')+str.split(imagefile.filename, '.')[-1], user_id)
+        imagefile.save(app.config['UPLOAD_FOLDER']+'_'+str(user_id)+'_'+title.replace(' ', '_')+str.split(imagefile.filename, '.')[-1])
         add_post(PostData)
         return redirect(url_for('Profile'))
     return render_template('addpost.html', 
                            LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
                            Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None)
+
+@app.route('/DeletePost/<Post_id>', methods=['POST', 'GET'])
+def DeletePost(Post_id=None):
+    delete_post(Post_id)
+    return redirect(url_for('Profile'))
+
+@app.route('/AddPost/<Post_id>', methods=['POST', 'GET'])
+def EditPost(Post_id=None):
+    if request.method == 'POST':
+        imagefile = request.files['Poster']
+        print(imagefile)
+        title = request.form['Title']
+        content = request.form['Content']
+        tags = request.form['tags']
+        user_id = request.cookies.get('User_id')
+        PostData = (content, title, tags, '../'+app.config['UPLOAD_FOLDER']+'_'+str(user_id)+'_'+title.replace(' ', '_')+str.split(imagefile.filename, '.')[-1], user_id)
+        imagefile.save(app.config['UPLOAD_FOLDER']+'_'+str(user_id)+'_'+title.replace(' ', '_')+str.split(imagefile.filename, '.')[-1])
+        edit_post(Post_id, PostData)
+        return redirect(url_for('Profile'))
+    else:
+        post = get_post(post_id=Post_id)
+        return render_template('addpost.html', 
+                                LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
+                                Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None, Post=post)
 
 @app.route('/Post/<int:Post_id>')
 def Post(Post_id=None):

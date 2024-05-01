@@ -8,6 +8,33 @@
 
 {% block body %}
 <div class="container mb-5">
+      {% if Post %}
+      <form action="/AddPost/{{ Post['Post'][0] }}" method="POST" enctype="multipart/form-data">
+        <div class="row gy-4 gy-xl-5 p-4 p-xl-5">
+          <div class="col-12">
+            <label for="Title" class="form-label text-light">Title <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="Title" name="Title" value="{{ Post['Post'][2] }}" required>
+          </div>
+          <div class="col-12">
+            <label for="tags" class="form-label text-light">Tags <span class="text-danger">*</span> <span class="text-muted">( Seperated By '|' )</span></label>
+            <input type="text" class="form-control" id="tags" name="tags" value="{{Post['Post'][3]}}" required>
+          </div>
+          <div class="col-12">
+            <label for="Poster" class="form-label text-light">Poster <span class="text-danger">*</span></label>
+            <input type="file" class="form-control" id="file" name="Poster" value="{{ Post['Post'][6]}}" accept=".png, .jpg, .jpeg, .webp" required>
+          </div>
+          <div class="col-12">
+            <label for="message" class="form-label text-light">Content <span class="text-danger">*</span></label>
+            <textarea class="form-control" id="Content" name="Content" rows="3" required>{{ Post['Post'][1] }}</textarea>
+          </div>
+          <div class="col-12">
+            <div class="d-grid">
+              <button class="btn btn-primary btn-lg" id="add_post" type="submit">Edit Post</button>
+            </div>
+          </div>
+        </div>
+      </form>
+      {% else %}
       <form action="/AddPost" method="POST" enctype="multipart/form-data">
         <div class="row gy-4 gy-xl-5 p-4 p-xl-5">
           <div class="col-12">
@@ -33,5 +60,6 @@
           </div>
         </div>
       </form>
+      {% endif %}
 </div>
 {% endblock %}
