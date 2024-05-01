@@ -10,6 +10,14 @@ def validate_login(email, password):
     conn.close()
     return valid, id
 
+def add_message(MessageData):
+    conn = sqlite3.connect('DB/blog.db')
+    c = conn.cursor()
+    c.execute('INSERT INTO Messages (Name, Subject, Content, Phone, Email) VALUES (:name, :subject, :content, :phone, :email)',
+              {'name':MessageData[0], 'subject':MessageData[1], 'content':MessageData[2], 'phone':MessageData[3], 'email':MessageData[4]})
+    conn.commit()
+    conn.close()
+
 def get_post(post_id: int, include_username=True, include_comments=True, include_liked=True, User_id=None) -> dict:
     conn = sqlite3.connect('DB/blog.db')
     c = conn.cursor()
@@ -28,7 +36,7 @@ def get_post(post_id: int, include_username=True, include_comments=True, include
     
     if include_liked:
         c.execute('SELECT user_ID FROM Likes WHERE post_ID=:post_id AND user_ID=:user_id', {'post_id': post_id, 'user_id':User_id})
-        Post_dict['Liked'] = True if not bool(c.fetchone()) else False
+        Post_dict['Liked'] = bool(c.fetchall())
 
     conn.close()
     return Post_dict

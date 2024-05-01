@@ -13,7 +13,7 @@
             <article class="text-white">
                 <header class="mb-4">
                     <h1 class="fw-bolder mb-1">{{Post['Post'][2]}} - {{ getUserName( Post['Post'][-1] ) }}</h1>
-                    <div class="text-muted fst-italic mb-2">{{Post['Post'][5]}}</div>
+                    <div class="text-secondary fst-italic mb-2">{{Post['Post'][5]}}</div>
                     {% for tag in split(Post['Post'][3], sep='|') %}
                     <div class="badge bg-secondary text-decoration-none link-light" >{{ tag }}</div>
                     {% endfor %}
@@ -61,8 +61,8 @@
             </section>
         </div>
         <div class="col-lg-4">
-            <div class="card mb-4">
-                <div class="card-header">Search</div>
+            <div class="card mb-4 bg-dark">
+                <div class="card-header text-light">Search</div>
                 <div class="card-body">
                     <div class="input-group">
                         <input class="form-control" type="text" placeholder="Enter search term..."
@@ -71,8 +71,8 @@
                     </div>
                 </div>
             </div>
-            <div class="card mb-4">
-                <div class="card-header">Other Blogs</div>
+            <div class="card mb-4 bg-dark">
+                <div class="card-header text-light">Other Blogs</div>
                 <div class="card-body row-sm-1">
                     <div class="row">
                         <div class="col-sm-12">

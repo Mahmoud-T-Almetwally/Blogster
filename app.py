@@ -1,7 +1,7 @@
 from flask import Flask, render_template, url_for, request, redirect, jsonify, send_file
 from utils import validate_login, username_availabe, match_passwords, email_availble,\
     register_user, get_user_data, get_all_posts, get_post, get_posts, update_user_data,\
-    add_like, get_user_posts, delete_like, new_post_data, add_comment, get_username, add_post
+    add_like, get_user_posts, delete_like, new_post_data, add_comment, get_username, add_post, add_message
 import os
 from io import BytesIO
 
@@ -73,6 +73,7 @@ def Profile():
         if request.method == 'POST':
             user = (request.cookies.get('User_id'), request.form['Username'], request.form['Password'], request.form['Phone'], request.form['Email'])
             update_user_data(user)
+            return redirect(url_for('Profile'))
         else:
             User_Posts = get_user_posts(request.cookies.get('User_id'), include_comments=True)
             Posts = []
@@ -139,6 +140,26 @@ def AddComment(Post_id=None):
     CommentData = (request.form['comment_sect'], request.cookies.get('User_id'), Post_id)
     add_comment(CommentData)
     return redirect(url_for('Post_comments', Post_id=Post_id))
+
+@app.route('/AddMessage', methods=['POST'])
+def AddMessage():
+    Name = request.form['fullname']
+    if request.cookies.get('LoggedIn'):
+        userData = get_user_data(request.cookies.get('User_id'))
+        Phone = userData[3]
+        Email = userData[4]
+    else:
+        Phone = request.form['phone']
+        Email = request.form['email']
+    
+    Subject = request.form['subject']
+    Message = request.form['message']
+
+    MessageData = (Name, Subject, Message, Phone, Email)
+
+    add_message(MessageData)
+    return redirect(url_for('index'))
+
 
 @app.route('/AddPostComment/<Post_id>', methods=['POST'])
 def AddPostComment(Post_id=None):
