@@ -28,8 +28,8 @@ def get_post(post_id: int, include_username=True, include_comments=True, include
     
     if include_liked:
         c.execute('SELECT user_ID FROM Likes WHERE post_ID=:post_id AND user_ID=:user_id', {'post_id': post_id, 'user_id':User_id})
-        Post_dict['Liked'] = True if [c.fetchone()] else False
-    print(Post_dict['Liked'])
+        Post_dict['Liked'] = True if not bool(c.fetchone()) else False
+
     conn.close()
     return Post_dict
 
@@ -79,7 +79,7 @@ def get_posts(order_by=None, num=3, include_usernames=True, include_comments=Tru
 
     c.execute(sql)
     top = c.fetchmany(num)
-    Posts_dict = {'Posts':top}
+    Posts_dict = {'Posts':list(reversed(top))}
 
     if include_usernames:
         usernames = []
@@ -97,6 +97,14 @@ def get_posts(order_by=None, num=3, include_usernames=True, include_comments=Tru
 
     conn.close()
     return Posts_dict
+
+def add_post(PostData):
+    conn = sqlite3.connect('DB/blog.db')
+    c = conn.cursor()
+    c.execute('INSERT INTO Posts (content, Title, category, date, photo, user_ID) VALUES (:Content, :title, :category, datetime(), :photo, :user_id)', 
+              {'Content':PostData[0], 'title':PostData[1], 'category':PostData[2], 'photo':PostData[3], 'user_id':PostData[4]})
+    conn.commit()
+    conn.close()
 
 def add_like(user_ID, post_ID):
     conn = sqlite3.connect('DB/blog.db')
@@ -155,7 +163,7 @@ def get_all_posts(month=None, year=None, include_usernames=True, include_comment
 
     c.execute(sql)
     posts = c.fetchall()
-    Posts_dict = {'Posts':posts}
+    Posts_dict = {'Posts':list(reversed(posts))}
 
     if include_usernames:
         usernames = []

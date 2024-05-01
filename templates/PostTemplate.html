@@ -12,14 +12,16 @@
         <div class="col-lg-8">
             <article class="text-white">
                 <header class="mb-4">
-                    <h1 class="fw-bolder mb-1">{{Post['Post'][2]}}</h1>
+                    <h1 class="fw-bolder mb-1">{{Post['Post'][2]}} - {{ getUserName( Post['Post'][-1] ) }}</h1>
                     <div class="text-muted fst-italic mb-2">{{Post['Post'][5]}}</div>
-                    <a class="badge bg-secondary text-decoration-none link-light" href="#!">Tag1</a>
+                    {% for tag in split(Post['Post'][3], sep='|') %}
+                    <div class="badge bg-secondary text-decoration-none link-light" >{{ tag }}</div>
+                    {% endfor %}
                 </header>
                 <figure class="mb-4"><img class="img-fluid rounded" style="max-width: 600px; max-height: 600;" src="{{Post['Post'][6]}}" alt="{{Post['Post'][2]}}" />
                 </figure>
                 <section class="mb-5">
-                    <p class="fs-5 mb-4">{{Post['Post'][1]}}</p>
+                    <p class="fs-5 mb-4" id="content">{{Post['Post'][1]}}</p>
                 </section>
             </article>
             <section class="mb-5 bg-dark p-2">
@@ -71,20 +73,13 @@
             </div>
             <div class="card mb-4">
                 <div class="card-header">Other Blogs</div>
-                <div class="card-body">
+                <div class="card-body row-sm-1">
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-12">
                             <ul class="list-unstyled mb-0">
-                                <li><a href="">SideTitle1</a></li>
-                                <li><a href="">SideTitle2</a></li>
-                                <li><a href="">SideTitle3</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-sm-6">
-                            <ul class="list-unstyled mb-0">
-                                <li><a href="">SideTitle3</a></li>
-                                <li><a href="">SideTitle4</a></li>
-                                <li><a href="">SideTitle5</a></li>
+                                {% for post in otherPosts %}
+                                <li><a href="/Post/{{post['Posts'][0]}}">{{ post['Posts'][1] }} - {{post['Usernames'][0]}}</a></li>
+                                {% endfor %}
                             </ul>
                         </div>
                     </div>

@@ -2,19 +2,25 @@
 
 {% block head %}
 <title>Add Post</title>
+<!-- <script type="text/javascript" src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 {% endblock %}
 
 {% block body %}
 <div class="container mb-5">
-    <form action="/AddPost" method="POST">
+      <form action="/AddPost" method="POST" enctype="multipart/form-data">
         <div class="row gy-4 gy-xl-5 p-4 p-xl-5">
           <div class="col-12">
             <label for="Title" class="form-label text-light">Title <span class="text-danger">*</span></label>
             <input type="text" class="form-control" id="Title" name="Title" value="" required>
           </div>
           <div class="col-12">
+            <label for="tags" class="form-label text-light">Tags <span class="text-danger">*</span> <span class="text-muted">( Seperated By '|' )</span></label>
+            <input type="text" class="form-control" id="tags" name="tags" value="" required>
+          </div>
+          <div class="col-12">
             <label for="Poster" class="form-label text-light">Poster <span class="text-danger">*</span></label>
-            <input type="file" class="form-control" id="Poster" name="Poster" value="" required>
+            <input type="file" class="form-control" id="file" name="Poster" value="file" accept=".png, .jpg, .jpeg, .webp" required>
           </div>
           <div class="col-12">
             <label for="message" class="form-label text-light">Content <span class="text-danger">*</span></label>
@@ -22,10 +28,10 @@
           </div>
           <div class="col-12">
             <div class="d-grid">
-              <button class="btn btn-primary btn-lg" type="submit">Add Post</button>
+              <button class="btn btn-primary btn-lg" id="add_post" type="submit">Add Post</button>
             </div>
           </div>
         </div>
-    </form>
+      </form>
 </div>
 {% endblock %}

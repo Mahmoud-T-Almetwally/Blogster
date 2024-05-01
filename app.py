@@ -1,9 +1,12 @@
-from flask import Flask, render_template, url_for, request, redirect, jsonify
+from flask import Flask, render_template, url_for, request, redirect, jsonify, send_file
 from utils import validate_login, username_availabe, match_passwords, email_availble,\
     register_user, get_user_data, get_all_posts, get_post, get_posts, update_user_data,\
-    add_like, get_user_posts, delete_like, new_post_data, add_comment, get_username
+    add_like, get_user_posts, delete_like, new_post_data, add_comment, get_username, add_post
+import os
+from io import BytesIO
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = 'static/imgs/'
 
 @app.route('/')
 def index():
@@ -151,11 +154,15 @@ def UpdatePosts(Post_id=None):
 @app.route('/AddPost', methods=['POST', 'GET'])
 def AddPost():
     if request.method == 'POST':
-        imagefile = request.files.get('Poster','')
+        imagefile = request.files['Poster']
         print(imagefile)
         title = request.form['Title']
-        print(title)
         content = request.form['Content']
+        tags = request.form['tags']
+        user_id = request.cookies.get('User_id')
+        PostData = (content, title, tags, '../'+app.config['UPLOAD_FOLDER']+imagefile.filename, user_id)
+        imagefile.save(app.config['UPLOAD_FOLDER']+imagefile.filename)
+        add_post(PostData)
         return redirect(url_for('Profile'))
     return render_template('addpost.html', 
                            LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
@@ -163,12 +170,18 @@ def AddPost():
 
 @app.route('/Post/<int:Post_id>')
 def Post(Post_id=None):
-    post = get_post(Post_id)
+    Post = get_post(Post_id, include_liked=True)
+    otherPosts = get_posts(num=5, include_comments=False)
+    OtherPosts = []
+    for post, username in zip(otherPosts['Posts'], otherPosts['Usernames']):
+        OtherPosts.append({'Posts' : post, 'Usernames' : username})
     return render_template('PostTemplate.html', LoggedIn=bool(request.cookies.get('LoggedIn')) if bool(request.cookies.get('LoggedIn')) else None,
                             Username="Hello, " + request.cookies.get('Username') if bool(request.cookies.get('LoggedIn')) else None,
-                            Post=post,
+                            Post=Post,
                             getUserName=get_username,
-                            numComments=len(post['Comments']))
+                            split=str.split,
+                            numComments=len(Post['Comments']),
+                            otherPosts=OtherPosts)
 
 if __name__ == "__main__":
     app.run(debug=True)
