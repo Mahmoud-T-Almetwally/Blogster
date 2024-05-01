@@ -126,7 +126,7 @@ def delete_post(Post_id):
 def edit_post(Post_id, new_PostData):
     conn = sqlite3.connect('DB/blog.db')
     c = conn.cursor()
-    c.execute('UPDATE Posts SET content=:Content, title=:Title, category=:tags, photo=:Photo WHERE post_ID=:post_id',
+    c.execute('UPDATE Posts SET content=:Content, title=:Title, category=:tags, photo=:Photo, date=datetime() WHERE post_ID=:post_id',
               {'Content': new_PostData[0], 'Title':new_PostData[1], 'tags':new_PostData[2], 'Photo':new_PostData[3], 'post_id':Post_id})
     conn.commit()
     conn.close()

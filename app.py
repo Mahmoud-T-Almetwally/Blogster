@@ -158,7 +158,6 @@ def AddMessage():
     add_message(MessageData)
     return redirect(url_for('index'))
 
-
 @app.route('/AddPostComment/<Post_id>', methods=['POST'])
 def AddPostComment(Post_id=None):
     CommentData = (request.form['comment_sect'], request.cookies.get('User_id'), Post_id)
@@ -179,8 +178,8 @@ def AddPost():
         content = request.form['Content']
         tags = request.form['tags']
         user_id = request.cookies.get('User_id')
-        PostData = (content, title, tags, '../'+app.config['UPLOAD_FOLDER']+'_'+str(user_id)+'_'+title.replace(' ', '_')+str.split(imagefile.filename, '.')[-1], user_id)
-        imagefile.save(app.config['UPLOAD_FOLDER']+'_'+str(user_id)+'_'+title.replace(' ', '_')+str.split(imagefile.filename, '.')[-1])
+        PostData = (content, title, tags, '../'+app.config['UPLOAD_FOLDER']+'_'+str(user_id)+'_'+title.replace(' ', '_')+imagefile.filename, user_id)
+        imagefile.save(app.config['UPLOAD_FOLDER']+'_'+str(user_id)+'_'+title.replace(' ', '_')+imagefile.filename)
         add_post(PostData)
         return redirect(url_for('Profile'))
     return render_template('addpost.html', 
@@ -201,8 +200,8 @@ def EditPost(Post_id=None):
         content = request.form['Content']
         tags = request.form['tags']
         user_id = request.cookies.get('User_id')
-        PostData = (content, title, tags, '../'+app.config['UPLOAD_FOLDER']+'_'+str(user_id)+'_'+title.replace(' ', '_')+str.split(imagefile.filename, '.')[-1], user_id)
-        imagefile.save(app.config['UPLOAD_FOLDER']+'_'+str(user_id)+'_'+title.replace(' ', '_')+str.split(imagefile.filename, '.')[-1])
+        PostData = (content, title, tags, '../'+app.config['UPLOAD_FOLDER']+'_'+str(user_id)+'_'+title.replace(' ', '_')+imagefile.filename, user_id)
+        imagefile.save(app.config['UPLOAD_FOLDER']+'_'+str(user_id)+'_'+title.replace(' ', '_')+imagefile.filename)
         edit_post(Post_id, PostData)
         return redirect(url_for('Profile'))
     else:
